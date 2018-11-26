@@ -3,7 +3,7 @@
 
 #define MICROPY_HW_LED_RX   &pin_PA14
 
-#define MICROPY_PORT_A        (PORT_PA14 | PORT_PA27 | PORT_PA24 | PORT_PA25)
+#define MICROPY_PORT_A        (PORT_PA14)
 #define MICROPY_PORT_B        (0)
 #define MICROPY_PORT_C        (0)
 
@@ -29,8 +29,6 @@
 #define IGNORE_PIN_PA09     1
 #define IGNORE_PIN_PA12     1
 #define IGNORE_PIN_PA13     1
-#define IGNORE_PIN_PA14     1
-#define IGNORE_PIN_PA16     1
 #define IGNORE_PIN_PA20     1
 #define IGNORE_PIN_PA21     1
 // USB is always used.
