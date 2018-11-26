@@ -3,10 +3,8 @@
 #include "board_busses.h"
 
 STATIC const mp_rom_map_elem_t board_global_dict_table[] = {
-    { MP_ROM_QSTR(MP_QSTR_D0), MP_ROM_PTR(&pin_PA11) },
-    { MP_ROM_QSTR(MP_QSTR_RX), MP_ROM_PTR(&pin_PA11) },
-    { MP_ROM_QSTR(MP_QSTR_D1), MP_ROM_PTR(&pin_PA10) },
-    { MP_ROM_QSTR(MP_QSTR_TX), MP_ROM_PTR(&pin_PA10) },
+    { MP_ROM_QSTR(MP_QSTR_D0), MP_ROM_PTR(&pin_PA30) },
+    { MP_ROM_QSTR(MP_QSTR_D1), MP_ROM_PTR(&pin_PA31) },
     { MP_ROM_QSTR(MP_QSTR_RFM9X_D0), MP_ROM_PTR(&pin_PA04) },
     { MP_ROM_QSTR(MP_QSTR_RFM9X_D1), MP_ROM_PTR(&pin_PA23) },
     { MP_ROM_QSTR(MP_QSTR_RFM9X_D2), MP_ROM_PTR(&pin_PA27) },
@@ -17,6 +15,5 @@ STATIC const mp_rom_map_elem_t board_global_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_MOSI), MP_ROM_PTR(&pin_PA18) },
     { MP_ROM_QSTR(MP_QSTR_MISO), MP_ROM_PTR(&pin_PA22) },
     { MP_ROM_QSTR(MP_QSTR_SPI), MP_ROM_PTR(&board_spi_obj) },
-    { MP_ROM_QSTR(MP_QSTR_UART), MP_ROM_PTR(&board_uart_obj) },
 };
 MP_DEFINE_CONST_DICT(board_module_globals, board_global_dict_table);

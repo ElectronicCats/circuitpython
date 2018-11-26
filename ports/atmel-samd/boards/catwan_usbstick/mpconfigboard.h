@@ -13,9 +13,6 @@
 #define DEFAULT_SPI_BUS_MOSI (&pin_PA18)
 #define DEFAULT_SPI_BUS_MISO (&pin_PA22)
 
-#define DEFAULT_UART_BUS_RX (&pin_PA11)
-#define DEFAULT_UART_BUS_TX (&pin_PA10)
-
 #define BOARD_FLASH_SIZE (0x00040000 - 0x2000 - 0x010000)
 
 #define IGNORE_PIN_PA00     1
@@ -27,6 +24,8 @@
 #define IGNORE_PIN_PA07     1
 #define IGNORE_PIN_PA08     1
 #define IGNORE_PIN_PA09     1
+#define IGNORE_PIN_PA10     1
+#define IGNORE_PIN_PA11     1
 #define IGNORE_PIN_PA12     1
 #define IGNORE_PIN_PA13     1
 #define IGNORE_PIN_PA20     1
