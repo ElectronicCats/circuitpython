@@ -34,8 +34,6 @@
 #define IGNORE_PIN_PA24     1
 #define IGNORE_PIN_PA25     1
 #define IGNORE_PIN_PA28     1
-#define IGNORE_PIN_PA30     1
-#define IGNORE_PIN_PA31     1
 #define IGNORE_PIN_PB01     1
 #define IGNORE_PIN_PB02     1
 #define IGNORE_PIN_PB03     1
