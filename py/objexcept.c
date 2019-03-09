@@ -114,17 +114,11 @@ void mp_obj_exception_print(const mp_print_t *print, mp_obj_t o_in, mp_print_kin
             return;
         } else if (o->args->len == 1) {
             // try to provide a nice OSError error message
-            if (o->base.type == &mp_type_OSError && MP_OBJ_IS_SMALL_INT(o->args->items[0])) {
-                const compressed_string_t* common = mp_common_errno_to_str(o->args->items[0]);
-                const char* msg;
+            if (MP_OBJ_IS_SMALL_INT(o->args->items[0]) &&
+                mp_obj_is_subclass_fast(MP_OBJ_FROM_PTR(o->base.type), MP_OBJ_FROM_PTR(&mp_type_OSError))) {
                 char decompressed[50];
-                if (common != NULL && common->length <= 50) {
-                    decompress(common, decompressed);
-                    msg = decompressed;
-                } else {
-                    msg = mp_errno_to_str(o->args->items[0]);
-                }
-                if (msg[0] != '\0') {
+                const char *msg = mp_common_errno_to_str(o->args->items[0], decompressed, sizeof(decompressed));
+                if (msg != NULL) {
                     mp_printf(print, "[Errno " INT_FMT "] %s", MP_OBJ_SMALL_INT_VALUE(o->args->items[0]), msg);
                     return;
                 }
@@ -136,8 +130,8 @@ void mp_obj_exception_print(const mp_print_t *print, mp_obj_t o_in, mp_print_kin
     mp_obj_tuple_print(print, MP_OBJ_FROM_PTR(o->args), kind);
 }
 
-mp_obj_t mp_obj_exception_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args) {
-    mp_arg_check_num(n_args, n_kw, 0, MP_OBJ_FUN_ARGS_MAX, false);
+mp_obj_t mp_obj_exception_make_new(const mp_obj_type_t *type, size_t n_args, const mp_obj_t *args, mp_map_t *kw_args) {
+    mp_arg_check_num(n_args, kw_args, 0, MP_OBJ_FUN_ARGS_MAX, false);
 
     // Try to allocate memory for the exception, with fallback to emergency exception object
     mp_obj_exception_t *o_exc = m_new_obj_maybe(mp_obj_exception_t);
@@ -215,6 +209,31 @@ void mp_obj_exception_attr(mp_obj_t self_in, qstr attr, mp_obj_t *dest) {
         dest[0] = MP_OBJ_FROM_PTR(self->args);
     } else if (self->base.type == &mp_type_StopIteration && attr == MP_QSTR_value) {
         dest[0] = mp_obj_exception_get_value(self_in);
+    #if MICROPY_CPYTHON_COMPAT
+    } else if (mp_obj_is_subclass_fast(MP_OBJ_FROM_PTR(self->base.type), MP_OBJ_FROM_PTR(&mp_type_OSError))) {
+        if (attr == MP_QSTR_errno) {
+            dest[0] = mp_obj_exception_get_value(self_in);
+        } else if (attr == MP_QSTR_strerror) {
+            if (self->args->len > 1) {
+                dest[0] = self->args->items[1];
+            } else if (self->args->len > 0) {
+                char decompressed[50];
+                const char *msg = mp_common_errno_to_str(self->args->items[0], decompressed, sizeof(decompressed));
+                if (msg != NULL) {
+                    dest[0] = mp_obj_new_str(msg, strlen(msg));
+                } else {
+                    dest[0] = mp_const_none;
+                }
+            } else {
+                dest[0] = mp_const_none;
+            }
+        } else if (attr == MP_QSTR_filename) {
+            dest[0] = self->args->len > 2 ? self->args->items[2] : mp_const_none;
+        // skip winerror
+        } else if (attr == MP_QSTR_filename2) {
+            dest[0] = self->args->len > 4 ? self->args->items[4] : mp_const_none;
+        }
+    #endif
     }
 }
 
@@ -317,7 +336,7 @@ mp_obj_t mp_obj_new_exception_arg1(const mp_obj_type_t *exc_type, mp_obj_t arg) 
 
 mp_obj_t mp_obj_new_exception_args(const mp_obj_type_t *exc_type, size_t n_args, const mp_obj_t *args) {
     assert(exc_type->make_new == mp_obj_exception_make_new);
-    return exc_type->make_new(exc_type, n_args, 0, args);
+    return exc_type->make_new(exc_type, n_args, args, NULL);
 }
 
 mp_obj_t mp_obj_new_exception_msg(const mp_obj_type_t *exc_type, const compressed_string_t *msg) {
@@ -419,7 +438,7 @@ mp_obj_t mp_obj_new_exception_msg_vlist(const mp_obj_type_t *exc_type, const com
     o_str->base.type = &mp_type_str;
     o_str->hash = qstr_compute_hash(o_str->data, o_str->len);
     mp_obj_t arg = MP_OBJ_FROM_PTR(o_str);
-    return mp_obj_exception_make_new(exc_type, 1, 0, &arg);
+    return mp_obj_exception_make_new(exc_type, 1, &arg, NULL);
 }
 
 // return true if the given object is an exception type
@@ -588,7 +607,7 @@ STATIC mp_obj_t code_make_new(qstr file, qstr block) {
         mp_obj_new_bytearray(0, NULL), // co_lnotab
     };
 
-    return namedtuple_make_new((const mp_obj_type_t*)&code_type_obj, 15, 0, elems);
+    return namedtuple_make_new((const mp_obj_type_t*)&code_type_obj, 15, elems, NULL);
 }
 
 STATIC const mp_obj_namedtuple_type_t frame_type_obj = {
@@ -631,7 +650,7 @@ STATIC mp_obj_t frame_make_new(mp_obj_t f_code, int f_lineno) {
         mp_const_none,             // f_trace
     };
 
-    return namedtuple_make_new((const mp_obj_type_t*)&frame_type_obj, 8, 0, elems);
+    return namedtuple_make_new((const mp_obj_type_t*)&frame_type_obj, 8, elems, NULL);
 }
 
 STATIC const mp_obj_namedtuple_type_t traceback_type_obj = {
@@ -668,7 +687,7 @@ STATIC mp_obj_t traceback_from_values(size_t *values, mp_obj_t tb_next) {
         tb_next,
     };
 
-    return namedtuple_make_new((const mp_obj_type_t*)&traceback_type_obj, 4, 0, elems);
+    return namedtuple_make_new((const mp_obj_type_t*)&traceback_type_obj, 4, elems, NULL);
 };
 
 mp_obj_t mp_obj_exception_get_traceback_obj(mp_obj_t self_in) {

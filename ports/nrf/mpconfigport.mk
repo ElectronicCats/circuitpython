@@ -3,6 +3,27 @@
 # This should correspond to the MICROPY_LONGINT_IMPL definition in mpconfigport.h.
 MPY_TOOL_LONGINT_IMPL = -mlongint-impl=mpz
 
-INTERNAL_LIBM = (1)
+INTERNAL_LIBM = 1
 
 USB_SERIAL_NUMBER_LENGTH = 16
+
+# All nRF ports have longints.
+LONGINT_IMPL = MPZ
+
+# No DAC, so no regular audio.
+CIRCUITPY_AUDIOIO = 0
+
+# No I2S yet.
+CIRCUITPY_AUDIOBUSIO = 0
+
+# No I2CSlave implementation
+CIRCUITPY_I2CSLAVE = 0
+
+# nvm not yet implemented
+CIRCUITPY_NVM = 0
+
+# rtc not yet implemented
+CIRCUITPY_RTC = 0
+
+# frequencyio not yet implemented
+CIRCUITPY_FREQUENCYIO = 0
