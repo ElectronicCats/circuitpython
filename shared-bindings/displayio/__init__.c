@@ -31,11 +31,9 @@
 
 #include "shared-bindings/displayio/__init__.h"
 #include "shared-bindings/displayio/Bitmap.h"
-#include "shared-bindings/displayio/BuiltinFont.h"
 #include "shared-bindings/displayio/ColorConverter.h"
 #include "shared-bindings/displayio/Display.h"
 #include "shared-bindings/displayio/FourWire.h"
-#include "shared-bindings/displayio/Glyph.h"
 #include "shared-bindings/displayio/Group.h"
 #include "shared-bindings/displayio/OnDiskBitmap.h"
 #include "shared-bindings/displayio/Palette.h"
@@ -59,19 +57,15 @@
 //|     :maxdepth: 3
 //|
 //|     Bitmap
-//|     BuiltinFont
 //|     ColorConverter
 //|     Display
 //|     FourWire
-//|     Glyph
 //|     Group
 //|     OnDiskBitmap
 //|     Palette
 //|     ParallelBus
 //|     Shape
 //|     TileGrid
-//|
-//| All libraries change hardware state but are never deinit
 //|
 
 
@@ -80,6 +74,9 @@
 //|   Releases any actively used displays so their busses and pins can be used again. This will also
 //|   release the builtin display on boards that have one. You will need to reinitialize it yourself
 //|   afterwards.
+//|
+//|   Use this once in your code.py if you initialize a display. Place it right before the
+//|   initialization so the display is active as long as possible.
 //|
 STATIC mp_obj_t displayio_release_displays(void) {
     common_hal_displayio_release_displays();
@@ -90,10 +87,8 @@ MP_DEFINE_CONST_FUN_OBJ_0(displayio_release_displays_obj, displayio_release_disp
 STATIC const mp_rom_map_elem_t displayio_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_displayio) },
     { MP_ROM_QSTR(MP_QSTR_Bitmap), MP_ROM_PTR(&displayio_bitmap_type) },
-    { MP_ROM_QSTR(MP_QSTR_BuiltinFont), MP_ROM_PTR(&displayio_builtinfont_type) },
     { MP_ROM_QSTR(MP_QSTR_ColorConverter), MP_ROM_PTR(&displayio_colorconverter_type) },
     { MP_ROM_QSTR(MP_QSTR_Display), MP_ROM_PTR(&displayio_display_type) },
-    { MP_ROM_QSTR(MP_QSTR_Glyph), MP_ROM_PTR(&displayio_glyph_type) },
     { MP_ROM_QSTR(MP_QSTR_Group), MP_ROM_PTR(&displayio_group_type) },
     { MP_ROM_QSTR(MP_QSTR_OnDiskBitmap), MP_ROM_PTR(&displayio_ondiskbitmap_type) },
     { MP_ROM_QSTR(MP_QSTR_Palette), MP_ROM_PTR(&displayio_palette_type) },

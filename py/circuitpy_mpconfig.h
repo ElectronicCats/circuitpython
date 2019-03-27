@@ -177,6 +177,7 @@ typedef long mp_off_t;
 
 // Remove some lesser-used functionality to make small builds fit.
 #define MICROPY_BUILTIN_METHOD_CHECK_SELF_ARG (CIRCUITPY_FULL_BUILD)
+#define MICROPY_CPYTHON_COMPAT                (CIRCUITPY_FULL_BUILD)
 #define MICROPY_MODULE_WEAK_LINKS             (CIRCUITPY_FULL_BUILD)
 #define MICROPY_PY_ALL_SPECIAL_METHODS        (CIRCUITPY_FULL_BUILD)
 #define MICROPY_PY_BUILTINS_COMPLEX           (CIRCUITPY_FULL_BUILD)
@@ -271,12 +272,15 @@ extern const struct _mp_obj_module_t digitalio_module;
 
 #if CIRCUITPY_DISPLAYIO
 extern const struct _mp_obj_module_t displayio_module;
+extern const struct _mp_obj_module_t fontio_module;
 extern const struct _mp_obj_module_t terminalio_module;
 #define DISPLAYIO_MODULE       { MP_OBJ_NEW_QSTR(MP_QSTR_displayio), (mp_obj_t)&displayio_module },
+#define FONTIO_MODULE       { MP_OBJ_NEW_QSTR(MP_QSTR_fontio), (mp_obj_t)&fontio_module },
 #define TERMINALIO_MODULE      { MP_OBJ_NEW_QSTR(MP_QSTR_terminalio), (mp_obj_t)&terminalio_module },
 #define CIRCUITPY_DISPLAY_LIMIT (3)
 #else
 #define DISPLAYIO_MODULE
+#define FONTIO_MODULE
 #define TERMINALIO_MODULE
 #define CIRCUITPY_DISPLAY_LIMIT (0)
 #endif
@@ -523,8 +527,9 @@ extern const struct _mp_obj_module_t pew_module;
     BOARD_MODULE \
     BUSIO_MODULE \
     DIGITALIO_MODULE \
-      TERMINALIO_MODULE \
     DISPLAYIO_MODULE \
+      FONTIO_MODULE \
+      TERMINALIO_MODULE \
     ERRNO_MODULE \
     FREQUENCYIO_MODULE \
     GAMEPAD_MODULE \
@@ -592,6 +597,7 @@ void run_background_tasks(void);
 #define MICROPY_VM_HOOK_RETURN run_background_tasks();
 
 #define CIRCUITPY_AUTORELOAD_DELAY_MS 500
+#define CIRCUITPY_FILESYSTEM_FLUSH_INTERVAL_MS 1000
 #define CIRCUITPY_BOOT_OUTPUT_FILE "/boot_out.txt"
 
 #endif  // __INCLUDED_MPCONFIG_CIRCUITPY_H

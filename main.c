@@ -139,8 +139,7 @@ void stop_mp(void) {
     MP_STATE_VM(vfs_cur) = vfs;
     #endif
 
-    // Run any finalizers before we stop using the heap.
-    gc_sweep_all();
+    gc_deinit();
 }
 
 #define STRING_LIST(...) {__VA_ARGS__, ""}
@@ -214,10 +213,11 @@ bool run_code_py(safe_mode_t safe_mode) {
                 serial_write_compressed(translate("WARNING: Your code filename has two extensions\n"));
             }
         }
-        // Turn off the display before the heap disappears.
+        // Turn off the display and flush the fileystem before the heap disappears.
         #if CIRCUITPY_DISPLAYIO
         reset_displays();
         #endif
+        filesystem_flush();
         stop_mp();
         free_memory(heap);
         supervisor_move_memory();
@@ -376,6 +376,7 @@ int run_repl(void) {
     } else {
         exit_code = pyexec_friendly_repl();
     }
+    filesystem_flush();
     reset_port();
     reset_board();
     stop_mp();

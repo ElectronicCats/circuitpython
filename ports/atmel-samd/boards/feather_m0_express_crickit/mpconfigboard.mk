@@ -12,11 +12,12 @@ LONGINT_IMPL = MPZ
 # Make space for frozen libs
 CIRCUITPY_DISPLAYIO = 0
 CIRCUITPY_FREQUENCYIO = 0
+CIRCUITPY_I2CSLAVE = 0
 
 CHIP_VARIANT = SAMD21G18A
 CHIP_FAMILY = samd21
 
-CFLAGS_INLINE_LIMIT = 55
+CFLAGS_INLINE_LIMIT = 50
 
 # Include these Python libraries in firmware.
 FROZEN_MPY_DIRS += $(TOP)/frozen/Adafruit_CircuitPython_BusDevice
