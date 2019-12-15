@@ -63,8 +63,6 @@ ifneq ($(SD), )
 	include bluetooth/bluetooth_common.mk
 endif
 
-FROZEN_MPY_DIR = freeze
-
 CROSS_COMPILE = arm-none-eabi-
 
 FATFS_DIR = lib/oofatfs
@@ -81,6 +79,7 @@ INC += -I./nrfx
 INC += -I./nrfx/hal
 INC += -I./nrfx/mdk
 INC += -I./nrfx/drivers/include
+INC += -I./nrfx/drivers/src
 INC += -I./bluetooth
 INC += -I./peripherals
 INC += -I../../lib/mp-readline
@@ -89,13 +88,10 @@ INC += -I../../supervisor/shared/usb
 
 #Debugging/Optimization
 ifeq ($(DEBUG), 1)
-  CFLAGS += -ggdb
-  # You may want to enable these flags to make setting breakpoints easier.
-  CFLAGS += -fno-inline -fno-ipa-sra
+  CFLAGS += -ggdb3 -Og
 else
   CFLAGS += -Os -DNDEBUG
-  # TODO: Test with -flto
-  ### CFLAGS += -flto
+  CFLAGS += -flto -flto-partition=none
 endif
 
 
@@ -108,6 +104,7 @@ CFLAGS += -Wno-undef
 CFLAGS += -Wno-cast-align
 
 NRF_DEFINES += -DCONFIG_GPIO_AS_PINRESET
+NRF_DEFINES += -D_FS_DISK_READ_ALIGNED=1
 CFLAGS += $(NRF_DEFINES)
 
 CFLAGS += \
@@ -120,7 +117,7 @@ CFLAGS += \
 # TODO: check this
 CFLAGS += -D__START=main
 
-LDFLAGS = $(CFLAGS) -nostartfiles -fshort-enums -Wl,-nostdlib -Wl,-T,$(LD_FILE) -Wl,-Map=$@.map -Wl,-cref -Wl,-gc-sections -specs=nano.specs
+LDFLAGS = $(CFLAGS) -nostartfiles -fshort-enums -Wl,-nostdlib -Wl,-T,$(GENERATED_LD_FILE) -Wl,-Map=$@.map -Wl,-cref -Wl,-gc-sections -specs=nano.specs
 LIBS := -lgcc -lc
 
 LDFLAGS += -mthumb -mcpu=cortex-m4
@@ -159,7 +156,6 @@ SRC_C += \
 	boards/$(BOARD)/pins.c \
 	device/$(MCU_VARIANT)/startup_$(MCU_SUB_VARIANT).c \
 	bluetooth/ble_drv.c \
-	bluetooth/ble_uart.c \
 	lib/libc/string0.c \
 	lib/mp-readline/readline.c \
 	lib/oofatfs/ff.c \
@@ -185,8 +181,7 @@ SRC_C += \
 # USB source files for nrf52840
 ifeq ($(MCU_SUB_VARIANT),nrf52840)
 SRC_C += \
-	lib/tinyusb/src/portable/nordic/nrf5x/dcd_nrf5x.c \
-	lib/tinyusb/src/portable/nordic/nrf5x/hal_nrf5x.c
+	lib/tinyusb/src/portable/nordic/nrf5x/dcd_nrf5x.c
 endif
 
 SRC_COMMON_HAL_EXPANDED = $(addprefix shared-bindings/, $(SRC_COMMON_HAL)) \
@@ -194,17 +189,19 @@ SRC_COMMON_HAL_EXPANDED = $(addprefix shared-bindings/, $(SRC_COMMON_HAL)) \
                           $(addprefix common-hal/, $(SRC_COMMON_HAL))
 
 SRC_SHARED_MODULE_EXPANDED = $(addprefix shared-bindings/, $(SRC_SHARED_MODULE)) \
-                             $(addprefix shared-module/, $(SRC_SHARED_MODULE))
+                             $(addprefix shared-module/, $(SRC_SHARED_MODULE)) \
+                             $(addprefix shared-module/, $(SRC_SHARED_MODULE_INTERNAL))
+
+# There may be duplicates between SRC_COMMON_HAL_EXPANDED and SRC_SHARED_MODULE_EXPANDED,
+# because a few modules have files both in common-hal/ and shared-modules/.
+# Doing a $(sort ...) removes duplicates as part of sorting.
+SRC_COMMON_HAL_SHARED_MODULE_EXPANDED = $(sort $(SRC_COMMON_HAL_EXPANDED) $(SRC_SHARED_MODULE_EXPANDED))
 
 SRC_S = supervisor/cpu.s
 
-FROZEN_MPY_PY_FILES := $(shell find -L $(FROZEN_MPY_DIR) -type f -name '*.py')
-FROZEN_MPY_MPY_FILES := $(addprefix $(BUILD)/,$(FROZEN_MPY_PY_FILES:.py=.mpy))
-
 OBJ += $(PY_O) $(SUPERVISOR_O) $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
 OBJ += $(addprefix $(BUILD)/, $(SRC_NRFX:.c=.o))
-OBJ += $(addprefix $(BUILD)/, $(SRC_COMMON_HAL_EXPANDED:.c=.o))
-OBJ += $(addprefix $(BUILD)/, $(SRC_SHARED_MODULE_EXPANDED:.c=.o))
+OBJ += $(addprefix $(BUILD)/, $(SRC_COMMON_HAL_SHARED_MODULE_EXPANDED:.c=.o))
 ifeq ($(INTERNAL_LIBM),1)
 OBJ += $(addprefix $(BUILD)/, $(SRC_LIBM:.c=.o))
 endif
@@ -222,10 +219,10 @@ SRC_QSTR_PREPROCESSOR +=
 
 all: $(BUILD)/firmware.bin $(BUILD)/firmware.uf2
 
-$(BUILD)/firmware.elf: $(OBJ)
+$(BUILD)/firmware.elf: $(OBJ) $(GENERATED_LD_FILE)
 	$(STEPECHO) "LINK $@"
-	$(Q)$(CC) -o $@ $(LDFLAGS) $^ -Wl,--start-group $(LIBS) -Wl,--end-group
-	$(Q)$(SIZE) $@ | $(PYTHON3) $(TOP)/tools/build_memory_info.py $(LD_FILE)
+	$(Q)$(CC) -o $@ $(LDFLAGS) $(OBJ) -Wl,--start-group $(LIBS) -Wl,--end-group
+	$(Q)$(SIZE) $@ | $(PYTHON3) $(TOP)/tools/build_memory_info.py $(GENERATED_LD_FILE)
 
 $(BUILD)/firmware.bin: $(BUILD)/firmware.elf
 	$(STEPECHO) "Create $@"
@@ -267,7 +264,7 @@ else ifeq ($(FLASHER), pyocd)
 
 flash: $(BUILD)/firmware.hex
 	pyocd-flashtool -t $(MCU_VARIANT) $< --sector_erase
-	#pyocd-tool -t $(MCU_VARIANT) erase $(BOOT_SETTING_ADDR)
+#	pyocd-tool -t $(MCU_VARIANT) erase $(BOOT_SETTING_ADDR)
 	pyocd-tool -t $(MCU_VARIANT) write32 $(BOOT_SETTING_ADDR) 0x00000001
 	pyocd-tool -t $(MCU_VARIANT) reset
 

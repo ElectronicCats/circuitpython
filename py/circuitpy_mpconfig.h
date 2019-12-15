@@ -28,10 +28,11 @@
 // sure that the same feature set and settings are used, such as in atmel-samd
 // and nrf.
 
-#include <stdint.h>
-
 #ifndef __INCLUDED_MPCONFIG_CIRCUITPY_H
 #define __INCLUDED_MPCONFIG_CIRCUITPY_H
+
+#include <stdint.h>
+#include <stdatomic.h>
 
 // This is CircuitPython.
 #define CIRCUITPY 1
@@ -56,8 +57,8 @@
 #define MICROPY_COMP_MODULE_CONST        (1)
 #define MICROPY_COMP_TRIPLE_TUPLE_ASSIGN (0)
 #define MICROPY_DEBUG_PRINTERS           (0)
-#define MICROPY_EMIT_INLINE_THUMB        (0)
-#define MICROPY_EMIT_THUMB               (0)
+#define MICROPY_EMIT_INLINE_THUMB        (CIRCUITPY_ENABLE_MPY_NATIVE)
+#define MICROPY_EMIT_THUMB               (CIRCUITPY_ENABLE_MPY_NATIVE)
 #define MICROPY_EMIT_X64                 (0)
 #define MICROPY_ENABLE_DOC_STRING        (0)
 #define MICROPY_ENABLE_FINALISER         (1)
@@ -72,6 +73,7 @@
 #define MICROPY_KBD_EXCEPTION            (1)
 #define MICROPY_MEM_STATS                (0)
 #define MICROPY_NONSTANDARD_TYPECODES    (0)
+#define MICROPY_OPT_COMPUTED_GOTO        (1)
 #define MICROPY_PERSISTENT_CODE_LOAD     (1)
 
 #define MICROPY_PY_ARRAY                 (1)
@@ -89,6 +91,7 @@
 #define MICROPY_PY_BUILTINS_MIN_MAX      (1)
 #define MICROPY_PY_BUILTINS_PROPERTY     (1)
 #define MICROPY_PY_BUILTINS_REVERSED     (1)
+#define MICROPY_PY_BUILTINS_ROUND_INT    (1)
 #define MICROPY_PY_BUILTINS_SET          (1)
 #define MICROPY_PY_BUILTINS_SLICE        (1)
 #define MICROPY_PY_BUILTINS_SLICE_ATTRS  (1)
@@ -137,7 +140,6 @@
 #define MICROPY_VFS_FAT             (MICROPY_VFS)
 #define MICROPY_READER_VFS          (MICROPY_VFS)
 
-
 // type definitions for the specific machine
 
 #define BYTES_PER_WORD (4)
@@ -165,13 +167,15 @@ typedef long mp_off_t;
 #define mp_import_stat mp_vfs_import_stat
 #define mp_builtin_open_obj mp_vfs_open_obj
 
+
 // extra built in names to add to the global namespace
 #define MICROPY_PORT_BUILTINS \
     { MP_OBJ_NEW_QSTR(MP_QSTR_help), (mp_obj_t)&mp_builtin_help_obj }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_input), (mp_obj_t)&mp_builtin_input_obj }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_open), (mp_obj_t)&mp_builtin_open_obj },
 
-// board specific definitions
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// board-specific definitions, which control and may override definitions below.
 #include "mpconfigboard.h"
 
 // CIRCUITPY_FULL_BUILD is defined in a *.mk file.
@@ -210,6 +214,9 @@ typedef long mp_off_t;
 #define MP_SSIZE_MAX (0x7fffffff)
 #endif
 
+#if INTERNAL_FLASH_FILESYSTEM == 0 && QSPI_FLASH_FILESYSTEM == 0 && SPI_FLASH_FILESYSTEM == 0 && !CIRCUITPY_MINIMAL_BUILD
+#error No *_FLASH_FILESYSTEM set!
+#endif
 
 // These CIRCUITPY_xxx values should all be defined in the *.mk files as being on or off.
 // So if any are not defined in *.mk, they'll throw an error here.
@@ -228,11 +235,39 @@ extern const struct _mp_obj_module_t audiobusio_module;
 #define AUDIOBUSIO_MODULE
 #endif
 
+#if CIRCUITPY_AUDIOCORE
+#define AUDIOCORE_MODULE         { MP_OBJ_NEW_QSTR(MP_QSTR_audiocore), (mp_obj_t)&audiocore_module },
+extern const struct _mp_obj_module_t audiocore_module;
+#else
+#define AUDIOCORE_MODULE
+#endif
+
 #if CIRCUITPY_AUDIOIO
 #define AUDIOIO_MODULE         { MP_OBJ_NEW_QSTR(MP_QSTR_audioio), (mp_obj_t)&audioio_module },
 extern const struct _mp_obj_module_t audioio_module;
 #else
 #define AUDIOIO_MODULE
+#endif
+
+#if CIRCUITPY_AUDIOMIXER
+#define AUDIOMIXER_MODULE         { MP_OBJ_NEW_QSTR(MP_QSTR_audiomixer), (mp_obj_t)&audiomixer_module },
+extern const struct _mp_obj_module_t audiomixer_module;
+#else
+#define AUDIOMIXER_MODULE
+#endif
+
+#if CIRCUITPY_AUDIOMP3
+#define AUDIOMP3_MODULE         { MP_OBJ_NEW_QSTR(MP_QSTR_audiomp3), (mp_obj_t)&audiomp3_module },
+extern const struct _mp_obj_module_t audiomp3_module;
+#else
+#define AUDIOMP3_MODULE
+#endif
+
+#if CIRCUITPY_AUDIOPWMIO
+#define AUDIOPWMIO_MODULE         { MP_OBJ_NEW_QSTR(MP_QSTR_audiopwmio), (mp_obj_t)&audiopwmio_module },
+extern const struct _mp_obj_module_t audiopwmio_module;
+#else
+#define AUDIOPWMIO_MODULE
 #endif
 
 #if CIRCUITPY_BITBANGIO
@@ -243,7 +278,7 @@ extern const struct _mp_obj_module_t bitbangio_module;
 #endif
 
 #if CIRCUITPY_BLEIO
-#define BLEIO_MODULE           { MP_OBJ_NEW_QSTR(MP_QSTR_bleio), (mp_obj_t)&bleio_module },
+#define BLEIO_MODULE           { MP_OBJ_NEW_QSTR(MP_QSTR__bleio), (mp_obj_t)&bleio_module },
 extern const struct _mp_obj_module_t bleio_module;
 #else
 #define BLEIO_MODULE
@@ -257,13 +292,7 @@ extern const struct _mp_obj_module_t board_module;
 #define BOARD_SPI (defined(DEFAULT_SPI_BUS_SCK) && defined(DEFAULT_SPI_BUS_MISO) && defined(DEFAULT_SPI_BUS_MOSI))
 #define BOARD_UART (defined(DEFAULT_UART_BUS_RX) && defined(DEFAULT_UART_BUS_TX))
 
-#if BOARD_I2C
-#define BOARD_I2C_ROOT_POINTER mp_obj_t shared_i2c_bus;
-#else
-#define BOARD_I2C_ROOT_POINTER
-#endif
-
-// SPI is always allocated off the heap.
+// I2C and SPI are always allocated off the heap.
 
 #if BOARD_UART
 #define BOARD_UART_ROOT_POINTER mp_obj_t shared_uart_bus;
@@ -273,7 +302,6 @@ extern const struct _mp_obj_module_t board_module;
 
 #else
 #define BOARD_MODULE
-#define BOARD_I2C_ROOT_POINTER
 #define BOARD_UART_ROOT_POINTER
 #endif
 
@@ -298,7 +326,7 @@ extern const struct _mp_obj_module_t terminalio_module;
 #define DISPLAYIO_MODULE       { MP_OBJ_NEW_QSTR(MP_QSTR_displayio), (mp_obj_t)&displayio_module },
 #define FONTIO_MODULE       { MP_OBJ_NEW_QSTR(MP_QSTR_fontio), (mp_obj_t)&fontio_module },
 #define TERMINALIO_MODULE      { MP_OBJ_NEW_QSTR(MP_QSTR_terminalio), (mp_obj_t)&terminalio_module },
-#define CIRCUITPY_DISPLAY_LIMIT (3)
+#define CIRCUITPY_DISPLAY_LIMIT (1)
 #else
 #define DISPLAYIO_MODULE
 #define FONTIO_MODULE
@@ -413,6 +441,13 @@ extern const struct _mp_obj_module_t pulseio_module;
 #define PULSEIO_MODULE         { MP_OBJ_NEW_QSTR(MP_QSTR_pulseio), (mp_obj_t)&pulseio_module },
 #else
 #define PULSEIO_MODULE
+#endif
+
+#if CIRCUITPY_PS2IO
+extern const struct _mp_obj_module_t ps2io_module;
+#define PS2IO_MODULE         { MP_OBJ_NEW_QSTR(MP_QSTR_ps2io), (mp_obj_t)&ps2io_module },
+#else
+#define PS2IO_MODULE
 #endif
 
 #if CIRCUITPY_RANDOM
@@ -555,7 +590,11 @@ extern const struct _mp_obj_module_t ustack_module;
 #define MICROPY_PORT_BUILTIN_MODULES_STRONG_LINKS \
     ANALOGIO_MODULE \
     AUDIOBUSIO_MODULE \
+    AUDIOCORE_MODULE \
     AUDIOIO_MODULE \
+    AUDIOMIXER_MODULE \
+    AUDIOMP3_MODULE \
+    AUDIOPWMIO_MODULE \
     BITBANGIO_MODULE \
     BLEIO_MODULE \
     BOARD_MODULE \
@@ -578,6 +617,7 @@ extern const struct _mp_obj_module_t ustack_module;
       WIZNET_MODULE \
     PEW_MODULE \
     PIXELBUF_MODULE \
+    PS2IO_MODULE \
     PULSEIO_MODULE \
     RANDOM_MODULE \
     RE_MODULE \
@@ -621,21 +661,30 @@ extern const struct _mp_obj_module_t ustack_module;
     GAMEPAD_ROOT_POINTERS \
     mp_obj_t pew_singleton; \
     mp_obj_t terminal_tilegrid_tiles; \
-    BOARD_I2C_ROOT_POINTER \
     BOARD_UART_ROOT_POINTER \
     FLASH_ROOT_POINTERS \
     NETWORK_ROOT_POINTERS \
 
-void run_background_tasks(void);
+void supervisor_run_background_tasks_if_tick(void);
+#define RUN_BACKGROUND_TASKS (supervisor_run_background_tasks_if_tick())
 
 // TODO: Used in wiznet5k driver, but may not be needed in the long run.
 #define MICROPY_THREAD_YIELD()
 
-#define MICROPY_VM_HOOK_LOOP run_background_tasks();
-#define MICROPY_VM_HOOK_RETURN run_background_tasks();
+#define MICROPY_VM_HOOK_LOOP RUN_BACKGROUND_TASKS;
+#define MICROPY_VM_HOOK_RETURN RUN_BACKGROUND_TASKS;
 
+// CIRCUITPY_AUTORELOAD_DELAY_MS = 0 will completely disable autoreload.
+#ifndef CIRCUITPY_AUTORELOAD_DELAY_MS
 #define CIRCUITPY_AUTORELOAD_DELAY_MS 500
+#endif
+
+#ifndef CIRCUITPY_FILESYSTEM_FLUSH_INTERVAL_MS
 #define CIRCUITPY_FILESYSTEM_FLUSH_INTERVAL_MS 1000
+#endif
+
 #define CIRCUITPY_BOOT_OUTPUT_FILE "/boot_out.txt"
+
+#define CIRCUITPY_VERBOSE_BLE 0
 
 #endif  // __INCLUDED_MPCONFIG_CIRCUITPY_H
