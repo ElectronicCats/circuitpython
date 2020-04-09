@@ -16,11 +16,18 @@ MEMORY
     FLASH_FATFS (r) : ORIGIN = ${CIRCUITPY_INTERNAL_FLASH_FILESYSTEM_START_ADDR}, LENGTH = ${CIRCUITPY_INTERNAL_FLASH_FILESYSTEM_SIZE}
     FLASH_BOOTLOADER (rx) : ORIGIN = ${BOOTLOADER_START_ADDR}, LENGTH = ${BOOTLOADER_SIZE}
     FLASH_BOOTLOADER_SETTINGS (r) : ORIGIN = ${BOOTLOADER_SETTINGS_START_ADDR}, LENGTH = ${BOOTLOADER_SETTINGS_SIZE}
-    RAM (xrw)       : ORIGIN = 0x20004000, LENGTH = 0x03C000 /* 240 KiB */
+
+
+    /* 0x2000000 - RAM:ORIGIN is reserved for Softdevice */
+    /* SoftDevice 6.1.0 with 5 connections and various increases takes just under 64kiB.
+    /* To measure the minimum required amount of memory for given configuration, set this number
+       high enough to work and then check the mutation of the value done by sd_ble_enable. */
+    SPIM3_RAM (rw)  : ORIGIN = 0x20000000 + ${SOFTDEVICE_RAM_SIZE}, LENGTH = ${SPIM3_BUFFER_SIZE}
+    RAM (xrw)       : ORIGIN = 0x20000000 + ${SOFTDEVICE_RAM_SIZE} + ${SPIM3_BUFFER_SIZE}, LENGTH = 256K - ${SOFTDEVICE_RAM_SIZE} -${SPIM3_BUFFER_SIZE}
+
 }
 
-/* produce a link error if there is not this amount of RAM for these sections */
-_minimum_stack_size = 40K;
+/* produce a link error if there is not this amount of RAM available */
 _minimum_heap_size = 0;
 
 /* top end of the stack */
@@ -31,6 +38,10 @@ _estack = ORIGIN(RAM) + LENGTH(RAM);
 /* RAM extents for the garbage collector */
 _ram_end = ORIGIN(RAM) + LENGTH(RAM);
 _heap_end = 0x20020000; /* tunable */
+
+/* nrf52840 SPIM3 needs its own area to work around hardware problems. Nothing else may use this space. */
+_spim3_ram = ORIGIN(SPIM3_RAM);
+_spim3_ram_end = ORIGIN(SPIM3_RAM) + LENGTH(RAM);
 
 /* define output sections */
 SECTIONS
@@ -119,7 +130,7 @@ SECTIONS
     .stack :
     {
         . = ALIGN(4);
-        . = . + _minimum_stack_size;
+        . = . + ${CIRCUITPY_DEFAULT_STACK_SIZE};
         . = ALIGN(4);
     } >RAM
 

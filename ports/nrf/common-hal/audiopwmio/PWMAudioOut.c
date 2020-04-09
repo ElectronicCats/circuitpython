@@ -155,10 +155,9 @@ void audiopwmout_background() {
     }
 }
 
+// Caller validates that pins are free.
 void common_hal_audiopwmio_pwmaudioout_construct(audiopwmio_pwmaudioout_obj_t* self,
         const mcu_pin_obj_t* left_channel, const mcu_pin_obj_t* right_channel, uint16_t quiescent_value) {
-    assert_pin_free(left_channel);
-    assert_pin_free(right_channel);
     self->pwm = pwmout_allocate(256, PWM_PRESCALER_PRESCALER_DIV_1, true, NULL, NULL);
     if (!self->pwm) {
         mp_raise_RuntimeError(translate("All timers in use"));
@@ -225,10 +224,6 @@ void common_hal_audiopwmio_pwmaudioout_play(audiopwmio_pwmaudioout_obj_t* self, 
     self->loop = loop;
 
     uint32_t sample_rate = audiosample_sample_rate(sample);
-    uint32_t max_sample_rate = 62500;
-    if (sample_rate > max_sample_rate) {
-        mp_raise_ValueError_varg(translate("Sample rate too high. It must be less than %d"), max_sample_rate);
-    }
     self->bytes_per_sample = audiosample_bits_per_sample(sample) / 8;
 
     uint32_t max_buffer_length;
@@ -255,16 +250,18 @@ void common_hal_audiopwmio_pwmaudioout_play(audiopwmio_pwmaudioout_obj_t* self, 
     self->pwm->LOOP = 1;
     audiosample_reset_buffer(self->sample, false, 0);
     activate_audiopwmout_obj(self);
+    self->stopping = false;
+    self->pwm->SHORTS = NRF_PWM_SHORT_LOOPSDONE_SEQSTART0_MASK;
     fill_buffers(self, 0);
     self->pwm->SEQ[1].PTR = self->pwm->SEQ[0].PTR;
     self->pwm->SEQ[1].CNT = self->pwm->SEQ[0].CNT;
     self->pwm->EVENTS_SEQSTARTED[0] = 0;
     self->pwm->EVENTS_SEQSTARTED[1] = 0;
+    self->pwm->EVENTS_SEQEND[0] = 0;
+    self->pwm->EVENTS_SEQEND[1] = 0;
     self->pwm->EVENTS_STOPPED = 0;
-    self->pwm->SHORTS = NRF_PWM_SHORT_LOOPSDONE_SEQSTART0_MASK;
     self->pwm->TASKS_SEQSTART[0] = 1;
     self->playing = true;
-    self->stopping = false;
     self->paused = false;
 }
 

@@ -72,6 +72,7 @@
 #define MICROPY_HELPER_REPL              (1)
 #define MICROPY_KBD_EXCEPTION            (1)
 #define MICROPY_MEM_STATS                (0)
+#define MICROPY_MODULE_BUILTIN_INIT      (1)
 #define MICROPY_NONSTANDARD_TYPECODES    (0)
 #define MICROPY_OPT_COMPUTED_GOTO        (1)
 #define MICROPY_PERSISTENT_CODE_LOAD     (1)
@@ -182,7 +183,13 @@ typedef long mp_off_t;
 
 // Remove some lesser-used functionality to make small builds fit.
 #define MICROPY_BUILTIN_METHOD_CHECK_SELF_ARG (CIRCUITPY_FULL_BUILD)
-#define MICROPY_CPYTHON_COMPAT                (CIRCUITPY_FULL_BUILD)
+//TODO: replace this with a rework of the FULL_BUILD system
+#if !defined(MICROPY_CPYTHON_COMPAT)
+	#define MICROPY_CPYTHON_COMPAT                (CIRCUITPY_FULL_BUILD)
+#endif
+#if !defined(MICROPY_COMP_FSTRING_LITERAL)
+#define MICROPY_COMP_FSTRING_LITERAL          (MICROPY_CPYTHON_COMPAT)
+#endif
 #define MICROPY_MODULE_WEAK_LINKS             (CIRCUITPY_FULL_BUILD)
 #define MICROPY_PY_ALL_SPECIAL_METHODS        (CIRCUITPY_FULL_BUILD)
 #define MICROPY_PY_BUILTINS_COMPLEX           (CIRCUITPY_FULL_BUILD)
@@ -193,7 +200,9 @@ typedef long mp_off_t;
 #define MICROPY_PY_UERRNO                     (CIRCUITPY_FULL_BUILD)
 // Opposite setting is deliberate.
 #define MICROPY_PY_UERRNO_ERRORCODE           (!CIRCUITPY_FULL_BUILD)
+#ifndef MICROPY_PY_URE
 #define MICROPY_PY_URE                        (CIRCUITPY_FULL_BUILD)
+#endif
 #define MICROPY_PY_URE_MATCH_GROUPS           (CIRCUITPY_FULL_BUILD)
 #define MICROPY_PY_URE_MATCH_SPAN_START_END   (CIRCUITPY_FULL_BUILD)
 #define MICROPY_PY_URE_SUB                    (CIRCUITPY_FULL_BUILD)
@@ -326,7 +335,9 @@ extern const struct _mp_obj_module_t terminalio_module;
 #define DISPLAYIO_MODULE       { MP_OBJ_NEW_QSTR(MP_QSTR_displayio), (mp_obj_t)&displayio_module },
 #define FONTIO_MODULE       { MP_OBJ_NEW_QSTR(MP_QSTR_fontio), (mp_obj_t)&fontio_module },
 #define TERMINALIO_MODULE      { MP_OBJ_NEW_QSTR(MP_QSTR_terminalio), (mp_obj_t)&terminalio_module },
+#ifndef CIRCUITPY_DISPLAY_LIMIT
 #define CIRCUITPY_DISPLAY_LIMIT (1)
+#endif
 #else
 #define DISPLAYIO_MODULE
 #define FONTIO_MODULE
@@ -375,6 +386,13 @@ extern const struct _mp_obj_module_t math_module;
 #define MATH_MODULE            { MP_OBJ_NEW_QSTR(MP_QSTR_math), (mp_obj_t)&math_module },
 #else
 #define MATH_MODULE
+#endif
+
+#if CIRCUITPY__EVE
+extern const struct _mp_obj_module_t _eve_module;
+#define _EVE_MODULE            { MP_OBJ_NEW_QSTR(MP_QSTR__eve), (mp_obj_t)&_eve_module },
+#else
+#define _EVE_MODULE
 #endif
 
 #if CIRCUITPY_MICROCONTROLLER
@@ -563,6 +581,12 @@ extern const struct _mp_obj_module_t ustack_module;
 #define JSON_MODULE
 #endif
 
+#if defined(CIRCUITPY_ULAB) && CIRCUITPY_ULAB
+#define ULAB_MODULE \
+    { MP_ROM_QSTR(MP_QSTR_ulab), MP_ROM_PTR(&ulab_user_cmodule) },
+#else
+#define ULAB_MODULE
+#endif
 #if MICROPY_PY_URE
 #define RE_MODULE { MP_ROM_QSTR(MP_QSTR_re), MP_ROM_PTR(&mp_module_ure) },
 #else
@@ -610,6 +634,7 @@ extern const struct _mp_obj_module_t ustack_module;
     I2CSLAVE_MODULE \
     JSON_MODULE \
     MATH_MODULE \
+    _EVE_MODULE \
     MICROCONTROLLER_MODULE \
     NEOPIXEL_WRITE_MODULE \
     NETWORK_MODULE \

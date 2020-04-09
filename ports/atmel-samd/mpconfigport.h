@@ -42,7 +42,6 @@
 #define CIRCUITPY_MCU_FAMILY                        samd21
 #define MICROPY_PY_SYS_PLATFORM                     "Atmel SAMD21"
 #define SPI_FLASH_MAX_BAUDRATE 8000000
-#define CIRCUITPY_DEFAULT_STACK_SIZE                4096
 #define MICROPY_PY_BUILTINS_NOTIMPLEMENTED          (0)
 #define MICROPY_PY_COLLECTIONS_ORDEREDDICT          (0)
 #define MICROPY_PY_FUNCTION_ATTRS                   (0)
@@ -74,8 +73,6 @@
 #define CIRCUITPY_MCU_FAMILY                        samd51
 #define MICROPY_PY_SYS_PLATFORM                     "MicroChip SAMD51"
 #define SPI_FLASH_MAX_BAUDRATE 24000000
-// 24kiB stack
-#define CIRCUITPY_DEFAULT_STACK_SIZE                0x6000
 #define MICROPY_PY_BUILTINS_NOTIMPLEMENTED          (1)
 #define MICROPY_PY_COLLECTIONS_ORDEREDDICT          (1)
 #define MICROPY_PY_FUNCTION_ATTRS                   (1)
@@ -108,6 +105,13 @@
 #define CIRCUITPY_INTERNAL_NVM_SIZE (256)
 #endif
 
+#ifndef CIRCUITPY_DEFAULT_STACK_SIZE
+#define CIRCUITPY_DEFAULT_STACK_SIZE                4096
+#endif
+
+// Smallest unit of flash that can be erased.
+#define FLASH_ERASE_SIZE NVMCTRL_ROW_SIZE
+
 #endif // SAMD21
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,6 +121,13 @@
 #ifndef CIRCUITPY_INTERNAL_NVM_SIZE
 #define CIRCUITPY_INTERNAL_NVM_SIZE (8192)
 #endif
+
+#ifndef CIRCUITPY_DEFAULT_STACK_SIZE
+#define CIRCUITPY_DEFAULT_STACK_SIZE                (24*1024)
+#endif
+
+// Smallest unit of flash that can be erased.
+#define FLASH_ERASE_SIZE NVMCTRL_BLOCK_SIZE
 
 // If CIRCUITPY is internal, use half of flash for it.
 #if INTERNAL_FLASH_FILESYSTEM
@@ -182,25 +193,25 @@
 #error BOOTLOADER_START_ADDR must be on a flash page boundary.
 #endif
 
-#if CIRCUITPY_INTERNAL_NVM_START_ADDR % FLASH_PAGE_SIZE != 0
-#error CIRCUITPY_INTERNAL_NVM_START_ADDR must be on a flash page boundary.
+#if CIRCUITPY_INTERNAL_NVM_START_ADDR % FLASH_ERASE_SIZE != 0
+#error CIRCUITPY_INTERNAL_NVM_START_ADDR must be on a flash erase (row or block) boundary.
 #endif
-#if CIRCUITPY_INTERNAL_NVM_SIZE % FLASH_PAGE_SIZE != 0
-#error CIRCUITPY_INTERNAL_NVM_SIZE must be a multiple of FLASH_PAGE_SIZE.
-#endif
-
-#if CIRCUITPY_INTERNAL_CONFIG_START_ADDR % FLASH_PAGE_SIZE != 0
-#error CIRCUITPY_INTERNAL_CONFIG_SIZE must be on a flash page boundary.
-#endif
-#if CIRCUITPY_INTERNAL_CONFIG_SIZE % FLASH_PAGE_SIZE != 0
-#error CIRCUITPY_INTERNAL_CONFIG_SIZE must be a multiple of FLASH_PAGE_SIZE.
+#if CIRCUITPY_INTERNAL_NVM_SIZE % FLASH_ERASE_SIZE != 0
+#error CIRCUITPY_INTERNAL_NVM_SIZE must be a multiple of FLASH_ERASE_SIZE.
 #endif
 
-#if CIRCUITPY_INTERNAL_FLASH_FILESYSTEM_START_ADDR % FLASH_PAGE_SIZE != 0
-#error CIRCUITPY_INTERNAL_FLASH_FILESYSTEM_SIZE must be on a flash page boundary.
+#if CIRCUITPY_INTERNAL_CONFIG_START_ADDR % FLASH_ERASE_SIZE != 0
+#error CIRCUITPY_INTERNAL_CONFIG_SIZE must be on a flash erase (row or block) boundary.
 #endif
-#if CIRCUITPY_INTERNAL_FLASH_FILESYSTEM_SIZE % FLASH_PAGE_SIZE != 0
-#error CIRCUITPY_INTERNAL_FLASH_FILESYSTEM_SIZE must be a multiple of FLASH_PAGE_SIZE.
+#if CIRCUITPY_INTERNAL_CONFIG_SIZE % FLASH_ERASE_SIZE != 0
+#error CIRCUITPY_INTERNAL_CONFIG_SIZE must be a multiple of FLASH_ERASE_SIZE.
+#endif
+
+#if CIRCUITPY_INTERNAL_FLASH_FILESYSTEM_START_ADDR % FLASH_ERASE_SIZE != 0
+#error CIRCUITPY_INTERNAL_FLASH_FILESYSTEM_SIZE must be on a flash erase (row or block) boundary.
+#endif
+#if CIRCUITPY_INTERNAL_FLASH_FILESYSTEM_SIZE % FLASH_ERASE_SIZE != 0
+#error CIRCUITPY_INTERNAL_FLASH_FILESYSTEM_SIZE must be a multiple of FLASH_ERASE_SIZE.
 #endif
 
 #if CIRCUITPY_FIRMWARE_SIZE < 0

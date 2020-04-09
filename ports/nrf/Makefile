@@ -73,8 +73,6 @@ INC += -I$(BUILD)
 INC += -I$(BUILD)/genhdr
 INC += -I./../../lib/cmsis/inc
 INC += -I./boards/$(BOARD)
-INC += -I./modules/ubluepy
-INC += -I./modules/ble
 INC += -I./nrfx
 INC += -I./nrfx/hal
 INC += -I./nrfx/mdk
@@ -104,7 +102,6 @@ CFLAGS += -Wno-undef
 CFLAGS += -Wno-cast-align
 
 NRF_DEFINES += -DCONFIG_GPIO_AS_PINRESET
-NRF_DEFINES += -D_FS_DISK_READ_ALIGNED=1
 CFLAGS += $(NRF_DEFINES)
 
 CFLAGS += \
@@ -138,6 +135,7 @@ SRC_NRFX = $(addprefix nrfx/,\
 	drivers/src/nrfx_uarte.c \
 	drivers/src/nrfx_gpiote.c \
 	drivers/src/nrfx_rtc.c \
+	drivers/src/nrfx_nvmc.c \
 	)
 
 ifdef EXTERNAL_FLASH_DEVICES
@@ -156,6 +154,7 @@ SRC_C += \
 	boards/$(BOARD)/pins.c \
 	device/$(MCU_VARIANT)/startup_$(MCU_SUB_VARIANT).c \
 	bluetooth/ble_drv.c \
+	common-hal/_bleio/bonding.c \
 	lib/libc/string0.c \
 	lib/mp-readline/readline.c \
 	lib/oofatfs/ff.c \
@@ -167,7 +166,6 @@ SRC_C += \
 	lib/utils/pyexec.c \
 	lib/utils/stdout_helpers.c \
 	lib/utils/sys_stdio_mphal.c \
-	nrfx/hal/nrf_nvmc.c \
 	nrfx/mdk/system_$(MCU_SUB_VARIANT).c \
 	peripherals/nrf/cache.c \
 	peripherals/nrf/clocks.c \
@@ -182,6 +180,32 @@ SRC_C += \
 ifeq ($(MCU_SUB_VARIANT),nrf52840)
 SRC_C += \
 	lib/tinyusb/src/portable/nordic/nrf5x/dcd_nrf5x.c
+endif
+
+ifeq ($(CIRCUITPY_NETWORK),1)
+CFLAGS += -DMICROPY_PY_NETWORK=1
+
+SRC_MOD += lib/netutils/netutils.c
+
+ifneq ($(MICROPY_PY_WIZNET5K),0)
+WIZNET5K_DIR=drivers/wiznet5k
+INC += -I$(TOP)/$(WIZNET5K_DIR)
+CFLAGS_MOD += -DMICROPY_PY_WIZNET5K=$(MICROPY_PY_WIZNET5K) -D_WIZCHIP_=$(MICROPY_PY_WIZNET5K)
+SRC_MOD += $(addprefix $(WIZNET5K_DIR)/,\
+        ethernet/w$(MICROPY_PY_WIZNET5K)/w$(MICROPY_PY_WIZNET5K).c \
+        ethernet/wizchip_conf.c \
+        ethernet/socket.c \
+        internet/dns/dns.c \
+        internet/dhcp/dhcp.c \
+        )
+
+endif # MICROPY_PY_WIZNET5K
+endif # CIRCUITPY_NETWORK
+
+ifeq ($(CIRCUITPY_NETWORK),1)
+ifneq ($(MICROPY_PY_WIZNET5K),0)
+SRC_SHARED_MODULE += wiznet/__init__.c wiznet/wiznet5k.c
+endif
 endif
 
 SRC_COMMON_HAL_EXPANDED = $(addprefix shared-bindings/, $(SRC_COMMON_HAL)) \
