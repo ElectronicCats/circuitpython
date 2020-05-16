@@ -17,7 +17,7 @@ import json
 import sys
 import os
 
-from recommonmark.parser import CommonMarkParser
+import recommonmark
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -55,16 +55,28 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'rstjinja',
-    'c2rst'
+    'recommonmark',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['templates']
 
 # The suffix of source filenames.
-source_suffix = ['.rst', '.md', '.c', '.h']
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}
 
-source_parsers = {'.md': CommonMarkParser}
+extensions.append('autoapi.extension')
+
+autoapi_type = 'python'
+# Uncomment this if debugging autoapi
+autoapi_keep_files = True
+autoapi_dirs = [os.path.join('circuitpython-stubs', x) for x in os.listdir('circuitpython-stubs')]
+autoapi_add_toctree_entry = False
+autoapi_options = ['members', 'undoc-members', 'private-members', 'show-inheritance', 'special-members', 'show-module-summary']
+autoapi_template_dir = 'docs/autoapi/templates'
+autoapi_python_use_implicit_namespaces = True
 
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
@@ -74,7 +86,7 @@ source_parsers = {'.md': CommonMarkParser}
 
 # General information about the project.
 project = 'Adafruit CircuitPython'
-copyright = '2014-2018, MicroPython & CircuitPython contributors (https://github.com/adafruit/circuitpython/graphs/contributors)'
+copyright = '2014-2020, MicroPython & CircuitPython contributors (https://github.com/adafruit/circuitpython/graphs/contributors)'
 
 # These are overwritten on ReadTheDocs.
 # The version info for the project you're documenting, acts as replacement for
@@ -101,6 +113,7 @@ exclude_patterns = ["**/build*",
                     ".git",
                     ".venv",
                     ".direnv",
+                    "docs/autoapi",
                     "docs/README.md",
                     "drivers",
                     "examples",
@@ -134,6 +147,7 @@ exclude_patterns = ["**/build*",
                     "ports/nrf/peripherals",
                     "ports/nrf/usb",
                     "ports/stm/st_driver",
+                    "ports/stm/packages",
                     "ports/stm/peripherals",
                     "ports/stm/ref",
                     "ports/unix",
@@ -357,4 +371,4 @@ intersphinx_mapping = {"cpython": ('https://docs.python.org/3/', None),
                        "register": ('https://circuitpython.readthedocs.io/projects/register/en/latest/', None)}
 
 def setup(app):
-    app.add_stylesheet("customstyle.css")
+    app.add_css_file("customstyle.css")
