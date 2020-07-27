@@ -2,8 +2,8 @@ SRC_SUPERVISOR = \
 	main.c \
 	supervisor/port.c \
 	supervisor/shared/autoreload.c \
+	supervisor/shared/background_callback.c \
 	supervisor/shared/board.c \
-	supervisor/shared/display.c \
 	supervisor/shared/filesystem.c \
 	supervisor/shared/flash.c \
 	supervisor/shared/micropython.c \
@@ -104,13 +104,26 @@ else
 	CFLAGS += -DUSB_AVAILABLE
 endif
 
+SUPERVISOR_O = $(addprefix $(BUILD)/, $(SRC_SUPERVISOR:.c=.o))
+
+ifeq ($(CIRCUITPY_DISPLAYIO), 1)
+	SRC_SUPERVISOR += \
+		supervisor/shared/display.c
+
+	SUPERVISOR_O += $(BUILD)/autogen_display_resources.o
+endif
 ifndef USB_INTERFACE_NAME
 USB_INTERFACE_NAME = "CircuitPython"
 endif
 
-ifndef USB_DEVICES
-USB_DEVICES = "CDC,MSC,AUDIO,HID"
+USB_DEVICES_COMPUTED := CDC,MSC
+ifeq ($(CIRCUITPY_USB_MIDI),1)
+USB_DEVICES_COMPUTED := $(USB_DEVICES_COMPUTED),AUDIO
 endif
+ifeq ($(CIRCUITPY_USB_HID),1)
+USB_DEVICES_COMPUTED := $(USB_DEVICES_COMPUTED),HID
+endif
+USB_DEVICES ?= "$(USB_DEVICES_COMPUTED)"
 
 ifndef USB_HID_DEVICES
 USB_HID_DEVICES = "KEYBOARD,MOUSE,CONSUMER,GAMEPAD"
@@ -181,8 +194,6 @@ USB_DESCRIPTOR_ARGS = \
 ifeq ($(USB_RENUMBER_ENDPOINTS), 0)
 USB_DESCRIPTOR_ARGS += --no-renumber_endpoints
 endif
-
-SUPERVISOR_O = $(addprefix $(BUILD)/, $(SRC_SUPERVISOR:.c=.o)) $(BUILD)/autogen_display_resources.o
 
 $(BUILD)/supervisor/shared/translate.o: $(HEADER_BUILD)/qstrdefs.generated.h
 

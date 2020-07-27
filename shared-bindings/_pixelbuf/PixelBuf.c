@@ -47,24 +47,19 @@ static void parse_byteorder(mp_obj_t byteorder_obj, pixelbuf_byteorder_details_t
 //| class PixelBuf:
 //|     """A fast RGB[W] pixel buffer for LED and similar devices."""
 //|
-//|     def __init__(self, size: int, *, byteorder: str = "BGR", brightness: float = 0, auto_write: bool = False, header: bytes = b"", trailer: bytes = b""):
+//|     def __init__(self, size: int, *, byteorder: str = "BGR", brightness: float = 0, auto_write: bool = False, header: ReadableBuffer = b"", trailer: ReadableBuffer = b"") -> None:
 //|         """Create a PixelBuf object of the specified size, byteorder, and bits per pixel.
 //|
 //|         When brightness is less than 1.0, a second buffer will be used to store the color values
 //|         before they are adjusted for brightness.
 //|
-//|         When ``P`` (pwm duration) is present as the 4th character of the byteorder
+//|         When ``P`` (PWM duration) is present as the 4th character of the byteorder
 //|         string, the 4th value in the tuple/list for a pixel is the individual pixel
-//|         brightness (0.0-1.0) and will enable a Dotstar compatible 1st byte in the
-//|         output buffer (``buf``).
-//|
-//|         When ``P`` (pwm duration) is present as the first character of the byteorder
-//|         string, the 4th value in the tuple/list for a pixel is the individual pixel
-//|         brightness (0.0-1.0) and will enable a Dotstar compatible 1st byte in the
-//|         output buffer (``buf``).
+//|         brightness (0.0-1.0) and will enable a Dotstar compatible 1st byte for each
+//|         pixel.
 //|
 //|         :param ~int size: Number of pixels
-//|         :param ~str byteorder: Byte order string (such as "BGR" or "PBGR")
+//|         :param ~str byteorder: Byte order string (such as "RGB", "RGBW" or "PBGR")
 //|         :param ~float brightness: Brightness (0 to 1.0, default 1.0)
 //|         :param ~bool auto_write: Whether to automatically write pixels (Default False)
 //|         :param bytes header: Sequence of bytes to always send before pixel values.
@@ -157,7 +152,7 @@ static void parse_byteorder(mp_obj_t byteorder_obj, pixelbuf_byteorder_details_t
     }
 }
 
-//|     bpp: Any = ...
+//|     bpp: int
 //|     """The number of bytes per pixel in the buffer (read-only)"""
 //|
 STATIC mp_obj_t pixelbuf_pixelbuf_obj_get_bpp(mp_obj_t self_in) {
@@ -173,7 +168,7 @@ const mp_obj_property_t pixelbuf_pixelbuf_bpp_obj = {
 };
 
 
-//|     brightness: Any = ...
+//|     brightness: float
 //|     """Float value between 0 and 1.  Output brightness.
 //|
 //|     When brightness is less than 1.0, a second buffer will be used to store the color values
@@ -204,7 +199,7 @@ const mp_obj_property_t pixelbuf_pixelbuf_brightness_obj = {
               (mp_obj_t)&mp_const_none_obj},
 };
 
-//|     auto_write: Any = ...
+//|     auto_write: bool
 //|     """Whether to automatically write the pixels after each update."""
 //|
 STATIC mp_obj_t pixelbuf_pixelbuf_obj_get_auto_write(mp_obj_t self_in) {
@@ -226,7 +221,7 @@ const mp_obj_property_t pixelbuf_pixelbuf_auto_write_obj = {
               (mp_obj_t)&mp_const_none_obj},
 };
 
-//|     byteorder: Any = ...
+//|     byteorder: str
 //|     """byteorder string for the buffer (read-only)"""
 //|
 STATIC mp_obj_t pixelbuf_pixelbuf_obj_get_byteorder(mp_obj_t self_in) {
@@ -250,7 +245,7 @@ STATIC mp_obj_t pixelbuf_pixelbuf_unary_op(mp_unary_op_t op, mp_obj_t self_in) {
     }
 }
 
-//|     def show(self, ) -> Any:
+//|     def show(self) -> None:
 //|         """Transmits the color data to the pixels so that they are shown. This is done automatically
 //|         when `auto_write` is True."""
 //|         ...
@@ -262,9 +257,9 @@ STATIC mp_obj_t pixelbuf_pixelbuf_show(mp_obj_t self_in) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_1(pixelbuf_pixelbuf_show_obj, pixelbuf_pixelbuf_show);
 
-//| def fill(color: Any) -> Any:
-//|     """Fills the given pixelbuf with the given color."""
-//|     ...
+//|     def fill(self, color: Union[int, Tuple[int, int, int]]) -> None:
+//|         """Fills the given pixelbuf with the given color."""
+//|         ...
 //|
 
 STATIC mp_obj_t pixelbuf_pixelbuf_fill(mp_obj_t self_in, mp_obj_t value) {
@@ -274,15 +269,24 @@ STATIC mp_obj_t pixelbuf_pixelbuf_fill(mp_obj_t self_in, mp_obj_t value) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_2(pixelbuf_pixelbuf_fill_obj, pixelbuf_pixelbuf_fill);
 
-//|     def __getitem__(self, index: Any) -> Any:
+//|     @overload
+//|     def __getitem__(self, index: slice) -> Tuple[Tuple, ...]: ...
+//|     def __getitem__(self, index: int) -> Tuple:
 //|         """Returns the pixel value at the given index as a tuple of (Red, Green, Blue[, White]) values
-//|         between 0 and 255."""
+//|         between 0 and 255.  When in PWM (DotStar) mode, the 4th tuple value is a float of the pixel
+//|         intensity from 0-1.0."""
 //|         ...
 //|
-//|     def __setitem__(self, index: Any, value: Any) -> Any:
-//|         """Sets the pixel value at the given index. Value can either be a tuple of (Red, Green, Blue
-//|         [, White]) values between 0 and 255 or an integer where the red, green and blue values are
-//|         packed into the lower three bytes (0xRRGGBB)."""
+//|     @overload
+//|     def __setitem__(self, index: slice, value: Tuple[Union[int, Tuple, List], ...]) -> None: ...
+//|     @overload
+//|     def __setitem__(self, index: slice, value: List[Union[int, Tuple, List]]) -> None: ...
+//|     def __setitem__(self, index: int, value: Union[int, Tuple, List]) -> None:
+//|         """Sets the pixel value at the given index.  Value can either be a tuple or integer.  Tuples are
+//|         The individual (Red, Green, Blue[, White]) values between 0 and 255.  If given an integer, the
+//|         red, green and blue values are packed into the lower three bytes (0xRRGGBB).
+//|         For RGBW byteorders, if given only RGB values either as an int or as a tuple, the white value
+//|         is used instead when the red, green, and blue values are the same."""
 //|         ...
 //|
 STATIC mp_obj_t pixelbuf_pixelbuf_subscr(mp_obj_t self_in, mp_obj_t index_in, mp_obj_t value) {
@@ -300,18 +304,21 @@ STATIC mp_obj_t pixelbuf_pixelbuf_subscr(mp_obj_t self_in, mp_obj_t index_in, mp
         size_t length = common_hal__pixelbuf_pixelbuf_get_len(self_in);
         mp_seq_get_fast_slice_indexes(length, index_in, &slice);
 
-        if (slice.step < 0) {
-            mp_raise_IndexError(translate("Negative step not supported"));
+        size_t slice_len;
+        if (slice.step > 0) {
+            slice_len = slice.stop - slice.start;
+        } else {
+            slice_len = 1 + slice.start - slice.stop;
+        }
+        if (slice.step > 1 || slice.step < -1) {
+            size_t step = slice.step > 0 ? slice.step : slice.step * -1;
+            slice_len = (slice_len / step) + (slice_len % step ? 1 : 0);
         }
 
         if (value == MP_OBJ_SENTINEL) { // Get
-            size_t len = slice.stop - slice.start;
-            if (slice.step > 1) {
-                len = (len / slice.step) + (len % slice.step ? 1 : 0);
-            }
-            mp_obj_tuple_t* t = MP_OBJ_TO_PTR(mp_obj_new_tuple(len, NULL));
-            for (uint i = 0; i < len; i++) {
-                t->items[i] = common_hal__pixelbuf_pixelbuf_get_pixel(self_in, i * slice.step);
+            mp_obj_tuple_t* t = MP_OBJ_TO_PTR(mp_obj_new_tuple(slice_len, NULL));
+            for (uint i = 0; i < slice_len; i++) {
+                t->items[i] = common_hal__pixelbuf_pixelbuf_get_pixel(self_in, i * slice.step + slice.start);
             }
             return MP_OBJ_FROM_PTR(t);
         } else { // Set
@@ -321,10 +328,6 @@ STATIC mp_obj_t pixelbuf_pixelbuf_subscr(mp_obj_t self_in, mp_obj_t index_in, mp
                 mp_raise_ValueError(translate("tuple/list required on RHS"));
             }
 
-            size_t dst_len = (slice.stop - slice.start);
-            if (slice.step > 1) {
-                dst_len = (dst_len / slice.step) + (dst_len % slice.step ? 1 : 0);
-            }
             mp_obj_t *src_objs;
             size_t num_items;
             if (MP_OBJ_IS_TYPE(value, &mp_type_list)) {
@@ -336,12 +339,12 @@ STATIC mp_obj_t pixelbuf_pixelbuf_subscr(mp_obj_t self_in, mp_obj_t index_in, mp
                 num_items = l->len;
                 src_objs = l->items;
             }
-            if (num_items != dst_len) {
+            if (num_items != slice_len) {
                 mp_raise_ValueError_varg(translate("Unmatched number of items on RHS (expected %d, got %d)."),
-                                                   dst_len, num_items);
+                                                   slice_len, num_items);
             }
 
-            common_hal__pixelbuf_pixelbuf_set_pixels(self_in, slice.start, slice.stop, slice.step, src_objs);
+            common_hal__pixelbuf_pixelbuf_set_pixels(self_in, slice.start, slice.step, slice_len, src_objs);
             return mp_const_none;
             #else
             return MP_OBJ_NULL; // op not supported

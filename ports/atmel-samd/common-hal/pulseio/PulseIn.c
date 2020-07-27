@@ -42,6 +42,7 @@
 #include "samd/timers.h"
 #include "shared-bindings/microcontroller/__init__.h"
 #include "shared-bindings/pulseio/PulseIn.h"
+#include "supervisor/shared/tick.h"
 #include "supervisor/shared/translate.h"
 
 // This timer is shared amongst all PulseIn objects as a higher resolution clock.
@@ -79,7 +80,7 @@ void pulsein_interrupt_handler(uint8_t channel) {
     // Grab the current time first.
     uint32_t current_overflow = overflow_count;
     Tc* tc = tc_insts[pulsein_tc_index];
-    #ifdef SAMD51
+    #ifdef SAM_D5X_E5X
     tc->COUNT16.CTRLBSET.reg = TC_CTRLBSET_CMD_READSYNC;
     while (tc->COUNT16.SYNCBUSY.bit.COUNT == 1 ||
            tc->COUNT16.CTRLBSET.bit.CMD == TC_CTRLBSET_CMD_READSYNC_Val) {}
@@ -87,7 +88,7 @@ void pulsein_interrupt_handler(uint8_t channel) {
     uint32_t current_count = tc->COUNT16.COUNT.reg;
 
     pulseio_pulsein_obj_t* self = get_eic_channel_data(channel);
-    if (!background_tasks_ok() || self->errored_too_fast) {
+    if (!supervisor_background_tasks_ok() || self->errored_too_fast) {
         self->errored_too_fast = true;
         common_hal_pulseio_pulsein_pause(self);
         return;
@@ -125,6 +126,9 @@ void pulsein_interrupt_handler(uint8_t channel) {
 }
 
 void pulsein_reset() {
+#ifdef SAMD21
+    rtc_end_pulsein();
+#endif
     refcount = 0;
     pulsein_tc_index = 0xff;
     overflow_count = 0;
@@ -173,7 +177,7 @@ void common_hal_pulseio_pulsein_construct(pulseio_pulsein_obj_t* self,
         // We use GCLK0 for SAMD21 which is 48MHz. We prescale it to 3MHz.
         turn_on_clocks(true, index, 0);
         #endif
-        #ifdef SAMD51
+        #ifdef SAM_D5X_E5X
         // We use GCLK5 for SAMD51 because it runs at 2MHz and we can use it for a 1MHz clock,
         // 1us per tick.
         turn_on_clocks(true, index, 5);
@@ -185,7 +189,7 @@ void common_hal_pulseio_pulsein_construct(pulseio_pulsein_obj_t* self,
                                 TC_CTRLA_PRESCALER_DIV16 |
                                 TC_CTRLA_WAVEGEN_NFRQ;
         #endif
-        #ifdef SAMD51
+        #ifdef SAM_D5X_E5X
         tc_reset(tc);
         tc_set_enable(tc, false);
         tc->COUNT16.CTRLA.reg = TC_CTRLA_MODE_COUNT16 | TC_CTRLA_PRESCALER_DIV2;
@@ -221,6 +225,10 @@ void common_hal_pulseio_pulsein_construct(pulseio_pulsein_obj_t* self,
 
     // Set config will enable the EIC.
     pulsein_set_config(self, true);
+#ifdef SAMD21
+    rtc_start_pulsein();
+#endif
+
 }
 
 bool common_hal_pulseio_pulsein_deinited(pulseio_pulsein_obj_t* self) {
@@ -231,6 +239,9 @@ void common_hal_pulseio_pulsein_deinit(pulseio_pulsein_obj_t* self) {
     if (common_hal_pulseio_pulsein_deinited(self)) {
         return;
     }
+#ifdef SAMD21
+    rtc_end_pulsein();
+#endif
     set_eic_handler(self->channel, EIC_HANDLER_NO_INTERRUPT);
     turn_off_eic_channel(self->channel);
     reset_pin_number(self->pin);

@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2019 Dan Halbert for Adafruit Industries
+# SPDX-FileCopyrightText: Copyright (c) 2019 Dan Halbert for Adafruit Industries
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -86,14 +86,18 @@ INC += -I../../supervisor/shared/usb
 
 #Debugging/Optimization
 ifeq ($(DEBUG), 1)
-  CFLAGS += -ggdb3 -Og
+  CFLAGS += -ggdb3
+  OPTIMIZATION_FLAGS = -Og
 else
-  CFLAGS += -Os -DNDEBUG -ggdb3
+  OPTIMIZATION_FLAGS ?= -O2
+  CFLAGS += -DNDEBUG -ggdb3
   CFLAGS += -flto -flto-partition=none
 endif
 
+# option to override compiler optimization level, set in boards/$(BOARD)/mpconfigboard.mk
+CFLAGS += $(OPTIMIZATION_FLAGS)
 
-CFLAGS += $(INC) -Wall -Werror -std=gnu11 -nostdlib $(BASE_CFLAGS) $(CFLAGS_MOD) $(COPT)
+CFLAGS += $(INC) -Wall -Werror -std=gnu11 -nostdlib -fshort-enums $(BASE_CFLAGS) $(CFLAGS_MOD) $(COPT)
 
 # Undo some warnings.
 # nrfx uses undefined preprocessor variables quite casually, so we can't do warning checks for these.
@@ -114,7 +118,7 @@ CFLAGS += \
 # TODO: check this
 CFLAGS += -D__START=main
 
-LDFLAGS = $(CFLAGS) -nostartfiles -fshort-enums -Wl,-nostdlib -Wl,-T,$(GENERATED_LD_FILE) -Wl,-Map=$@.map -Wl,-cref -Wl,-gc-sections -specs=nano.specs
+LDFLAGS = $(CFLAGS) -nostartfiles -Wl,-nostdlib -Wl,-T,$(GENERATED_LD_FILE) -Wl,-Map=$@.map -Wl,-cref -Wl,-gc-sections -specs=nano.specs
 LIBS := -lgcc -lc
 
 LDFLAGS += -mthumb -mcpu=cortex-m4
@@ -136,6 +140,7 @@ SRC_NRFX = $(addprefix nrfx/,\
 	drivers/src/nrfx_gpiote.c \
 	drivers/src/nrfx_rtc.c \
 	drivers/src/nrfx_nvmc.c \
+	drivers/src/nrfx_wdt.c \
 	)
 
 ifdef EXTERNAL_FLASH_DEVICES

@@ -13,9 +13,16 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+# SPDX-FileCopyrightText: 2014 MicroPython & CircuitPython contributors (https://github.com/adafruit/circuitpython/graphs/contributors)
+#
+# SPDX-License-Identifier: MIT
+
 import json
-import sys
+import logging
 import os
+import subprocess
+import sys
+import urllib.parse
 
 import recommonmark
 
@@ -67,6 +74,7 @@ source_suffix = {
     '.md': 'markdown',
 }
 
+subprocess.check_output(["make", "stubs"])
 extensions.append('autoapi.extension')
 
 autoapi_type = 'python'
@@ -77,6 +85,9 @@ autoapi_add_toctree_entry = False
 autoapi_options = ['members', 'undoc-members', 'private-members', 'show-inheritance', 'special-members', 'show-module-summary']
 autoapi_template_dir = 'docs/autoapi/templates'
 autoapi_python_use_implicit_namespaces = True
+autoapi_root = "shared-bindings"
+
+redirects_file = 'docs/redirects.txt'
 
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
@@ -136,6 +147,8 @@ exclude_patterns = ["**/build*",
                     "ports/atmel-samd/tools",
                     "ports/cxd56/mkspk",
                     "ports/cxd56/spresense-exported-sdk",
+                    "ports/esp32s2/esp-idf",
+                    "ports/esp32s2/peripherals",
                     "ports/litex/hw",
                     "ports/minimal",
                     "ports/mimxrt10xx/peripherals",
@@ -370,5 +383,47 @@ intersphinx_mapping = {"cpython": ('https://docs.python.org/3/', None),
                        "bus_device": ('https://circuitpython.readthedocs.io/projects/busdevice/en/latest/', None),
                        "register": ('https://circuitpython.readthedocs.io/projects/register/en/latest/', None)}
 
+# Adapted from sphinxcontrib-redirects
+from sphinx.builders import html as builders
+
+TEMPLATE = """<html>
+  <head><meta http-equiv="refresh" content="0; url=%s"/></head>
+</html>
+"""
+
+
+def generate_redirects(app):
+    path = os.path.join(app.srcdir, app.config.redirects_file)
+    if not os.path.exists(path):
+        logging.error("Could not find redirects file at '%s'" % path)
+        return
+
+    if not isinstance(app.builder, builders.StandaloneHTMLBuilder):
+        logging.warn("The 'sphinxcontib-redirects' plugin is only supported "
+                 "by the 'html' builder and subclasses. Skipping...")
+        logging.warn(f"Builder is {app.builder.name} ({type(app.builder)})")
+        return
+
+    with open(path) as redirects:
+        for line in redirects.readlines():
+            from_path, to_path = line.rstrip().split(' ')
+
+            logging.debug("Redirecting '%s' to '%s'" % (from_path, to_path))
+
+            from_path = os.path.splitext(from_path)[0] + ".html"
+            to_path_prefix = '..%s' % os.path.sep * (
+                len(from_path.split(os.path.sep)) - 1)
+            to_path = to_path_prefix + to_path
+
+            redirected_filename = os.path.join(app.builder.outdir, from_path)
+            redirected_directory = os.path.dirname(redirected_filename)
+            if not os.path.exists(redirected_directory):
+                os.makedirs(redirected_directory)
+
+            with open(redirected_filename, 'w') as f:
+                f.write(TEMPLATE % urllib.parse.quote(to_path, '#/'))
+
 def setup(app):
     app.add_css_file("customstyle.css")
+    app.add_config_value('redirects_file', 'redirects', 'env')
+    app.connect('builder-inited', generate_redirects)

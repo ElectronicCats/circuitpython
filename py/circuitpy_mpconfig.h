@@ -119,9 +119,12 @@
 #define MICROPY_QSTR_BYTES_IN_HASH       (1)
 #define MICROPY_REPL_AUTO_INDENT         (1)
 #define MICROPY_REPL_EVENT_DRIVEN        (0)
+#define MICROPY_ENABLE_PYSTACK           (1)
 #define MICROPY_STACK_CHECK              (1)
 #define MICROPY_STREAMS_NON_BLOCK        (1)
+#ifndef MICROPY_USE_INTERNAL_PRINTF
 #define MICROPY_USE_INTERNAL_PRINTF      (1)
+#endif
 
 // fatfs configuration used in ffconf.h
 //
@@ -214,6 +217,10 @@ typedef long mp_off_t;
 #ifdef LONGINT_IMPL_LONGLONG
 #define MICROPY_LONGINT_IMPL (MICROPY_LONGINT_IMPL_LONGLONG)
 #define MP_SSIZE_MAX (0x7fffffff)
+#endif
+
+#ifndef MICROPY_PY_REVERSE_SPECIAL_METHODS
+#define MICROPY_PY_REVERSE_SPECIAL_METHODS    (CIRCUITPY_FULL_BUILD)
 #endif
 
 #if INTERNAL_FLASH_FILESYSTEM == 0 && QSPI_FLASH_FILESYSTEM == 0 && SPI_FLASH_FILESYSTEM == 0 && !DISABLE_FILESYSTEM
@@ -395,11 +402,18 @@ extern const struct _mp_obj_module_t gamepadshift_module;
 #define GAMEPAD_ROOT_POINTERS
 #endif
 
-#if CIRCUITPY_I2CSLAVE
-extern const struct _mp_obj_module_t i2cslave_module;
-#define I2CSLAVE_MODULE        { MP_OBJ_NEW_QSTR(MP_QSTR_i2cslave), (mp_obj_t)&i2cslave_module },
+#if CIRCUITPY_GNSS
+extern const struct _mp_obj_module_t gnss_module;
+#define GNSS_MODULE        { MP_OBJ_NEW_QSTR(MP_QSTR_gnss), (mp_obj_t)&gnss_module },
 #else
-#define I2CSLAVE_MODULE
+#define GNSS_MODULE
+#endif
+
+#if CIRCUITPY_I2CPERIPHERAL
+extern const struct _mp_obj_module_t i2cperipheral_module;
+#define I2CPERIPHERAL_MODULE        { MP_OBJ_NEW_QSTR(MP_QSTR_i2cperipheral), (mp_obj_t)&i2cperipheral_module },
+#else
+#define I2CPERIPHERAL_MODULE
 #endif
 
 #if CIRCUITPY_MATH
@@ -414,6 +428,16 @@ extern const struct _mp_obj_module_t _eve_module;
 #define _EVE_MODULE            { MP_OBJ_NEW_QSTR(MP_QSTR__eve), (mp_obj_t)&_eve_module },
 #else
 #define _EVE_MODULE
+#endif
+
+#if CIRCUITPY_MEMORYMONITOR
+extern const struct _mp_obj_module_t memorymonitor_module;
+#define MEMORYMONITOR_MODULE { MP_OBJ_NEW_QSTR(MP_QSTR_memorymonitor), (mp_obj_t)&memorymonitor_module },
+#define MEMORYMONITOR_ROOT_POINTERS mp_obj_t active_allocationsizes; \
+                                    mp_obj_t active_allocationalarms;
+#else
+#define MEMORYMONITOR_MODULE
+#define MEMORYMONITOR_ROOT_POINTERS
 #endif
 
 #if CIRCUITPY_MICROCONTROLLER
@@ -524,6 +548,20 @@ extern const struct _mp_obj_module_t samd_module;
 #define SAMD_MODULE
 #endif
 
+#if CIRCUITPY_SDCARDIO
+extern const struct _mp_obj_module_t sdcardio_module;
+#define SDCARDIO_MODULE           { MP_OBJ_NEW_QSTR(MP_QSTR_sdcardio), (mp_obj_t)&sdcardio_module },
+#else
+#define SDCARDIO_MODULE
+#endif
+
+#if CIRCUITPY_SDIOIO
+extern const struct _mp_obj_module_t sdioio_module;
+#define SDIOIO_MODULE           { MP_OBJ_NEW_QSTR(MP_QSTR_sdioio), (mp_obj_t)&sdioio_module },
+#else
+#define SDIOIO_MODULE
+#endif
+
 #if CIRCUITPY_STAGE
 extern const struct _mp_obj_module_t stage_module;
 #define STAGE_MODULE           { MP_OBJ_NEW_QSTR(MP_QSTR__stage), (mp_obj_t)&stage_module },
@@ -610,15 +648,28 @@ extern const struct _mp_obj_module_t ustack_module;
 #endif
 
 #if defined(CIRCUITPY_ULAB) && CIRCUITPY_ULAB
+// ulab requires reverse special methods
+#if defined(MICROPY_PY_REVERSE_SPECIAL_METHODS) && !MICROPY_PY_REVERSE_SPECIAL_METHODS
+#error "ulab requires MICROPY_PY_REVERSE_SPECIAL_METHODS"
+#endif
 #define ULAB_MODULE \
     { MP_ROM_QSTR(MP_QSTR_ulab), MP_ROM_PTR(&ulab_user_cmodule) },
 #else
 #define ULAB_MODULE
 #endif
+
 #if MICROPY_PY_URE
 #define RE_MODULE { MP_ROM_QSTR(MP_QSTR_re), MP_ROM_PTR(&mp_module_ure) },
 #else
 #define RE_MODULE
+#endif
+
+// This is not a top-level module; it's microcontroller.watchdog.
+#if CIRCUITPY_WATCHDOG
+extern const struct _mp_obj_module_t watchdog_module;
+#define WATCHDOG_MODULE { MP_ROM_QSTR(MP_QSTR_watchdog), MP_ROM_PTR(&watchdog_module) },
+#else
+#define WATCHDOG_MODULE
 #endif
 
 // Define certain native modules with weak links so they can be replaced with Python
@@ -663,10 +714,12 @@ extern const struct _mp_obj_module_t ustack_module;
     FREQUENCYIO_MODULE \
     GAMEPAD_MODULE \
     GAMEPADSHIFT_MODULE \
-    I2CSLAVE_MODULE \
+    GNSS_MODULE \
+    I2CPERIPHERAL_MODULE \
     JSON_MODULE \
     MATH_MODULE \
     _EVE_MODULE \
+    MEMORYMONITOR_MODULE \
     MICROCONTROLLER_MODULE \
     NEOPIXEL_WRITE_MODULE \
     NETWORK_MODULE \
@@ -682,6 +735,8 @@ extern const struct _mp_obj_module_t ustack_module;
     ROTARYIO_MODULE \
     RTC_MODULE \
     SAMD_MODULE \
+    SDCARDIO_MODULE \
+    SDIOIO_MODULE \
     STAGE_MODULE \
     STORAGE_MODULE \
     STRUCT_MODULE \
@@ -691,6 +746,7 @@ extern const struct _mp_obj_module_t ustack_module;
     USB_HID_MODULE \
     USB_MIDI_MODULE \
     USTACK_MODULE \
+    WATCHDOG_MODULE \
 
 // If weak links are enabled, just include strong links in the main list of modules,
 // and also include the underscore alternate names.
@@ -721,6 +777,7 @@ extern const struct _mp_obj_module_t ustack_module;
     mp_obj_t terminal_tilegrid_tiles; \
     BOARD_UART_ROOT_POINTER \
     FLASH_ROOT_POINTERS \
+    MEMORYMONITOR_ROOT_POINTERS \
     NETWORK_ROOT_POINTERS \
 
 void supervisor_run_background_tasks_if_tick(void);
@@ -739,6 +796,10 @@ void supervisor_run_background_tasks_if_tick(void);
 
 #ifndef CIRCUITPY_FILESYSTEM_FLUSH_INTERVAL_MS
 #define CIRCUITPY_FILESYSTEM_FLUSH_INTERVAL_MS 1000
+#endif
+
+#ifndef CIRCUITPY_PYSTACK_SIZE
+#define CIRCUITPY_PYSTACK_SIZE 1024
 #endif
 
 #define CIRCUITPY_BOOT_OUTPUT_FILE "/boot_out.txt"

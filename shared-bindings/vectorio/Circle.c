@@ -11,7 +11,7 @@
 
 //| class Circle:
 //|
-//|     def __init__(self, radius: int):
+//|     def __init__(self, radius: int) -> None:
 //|         """Circle is positioned on screen by its center point.
 //|
 //|            :param radius: The radius of the circle in pixels"""
@@ -37,7 +37,7 @@ static mp_obj_t vectorio_circle_make_new(const mp_obj_type_t *type, size_t n_arg
 }
 
 
-//|     radius : int = ...
+//|     radius : int
 //|     """The radius of the circle in pixels."""
 //|
 STATIC mp_obj_t vectorio_circle_obj_get_radius(mp_obj_t self_in) {
@@ -72,4 +72,3 @@ const mp_obj_type_t vectorio_circle_type = {
     .make_new = vectorio_circle_make_new,
     .locals_dict = (mp_obj_dict_t*)&vectorio_circle_locals_dict,
 };
-

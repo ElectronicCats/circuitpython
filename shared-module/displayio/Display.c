@@ -137,7 +137,7 @@ void common_hal_displayio_display_construct(displayio_display_obj_t* self,
     // Set the group after initialization otherwise we may send pixels while we delay in
     // initialization.
     common_hal_displayio_display_show(self, &circuitpython_splash);
-    self->auto_refresh = auto_refresh;
+    common_hal_displayio_display_set_auto_refresh(self, auto_refresh);
 }
 
 bool common_hal_displayio_display_show(displayio_display_obj_t* self, displayio_group_t* root_group) {
@@ -170,7 +170,7 @@ bool common_hal_displayio_display_set_brightness(displayio_display_obj_t* self, 
         brightness = 1.0-brightness;
     }
     bool ok = false;
-    
+
     // Avoid PWM types and functions when the module isn't enabled
     #if (CIRCUITPY_PULSEIO)
     bool ispwm = (self->backlight_pwm.base.type == &pulseio_pwmout_type) ? true : false;
@@ -383,6 +383,13 @@ bool common_hal_displayio_display_get_auto_refresh(displayio_display_obj_t* self
 void common_hal_displayio_display_set_auto_refresh(displayio_display_obj_t* self,
                                                    bool auto_refresh) {
     self->first_manual_refresh = !auto_refresh;
+    if (auto_refresh != self->auto_refresh) {
+        if (auto_refresh) {
+            supervisor_enable_tick();
+        } else {
+            supervisor_disable_tick();
+        }
+    }
     self->auto_refresh = auto_refresh;
 }
 
@@ -409,11 +416,12 @@ void displayio_display_background(displayio_display_obj_t* self) {
 }
 
 void release_display(displayio_display_obj_t* self) {
+    common_hal_displayio_display_set_auto_refresh(self, false);
     release_display_core(&self->core);
     #if (CIRCUITPY_PULSEIO)
     if (self->backlight_pwm.base.type == &pulseio_pwmout_type) {
         common_hal_pulseio_pwmout_reset_ok(&self->backlight_pwm);
-        common_hal_pulseio_pwmout_deinit(&self->backlight_pwm);  
+        common_hal_pulseio_pwmout_deinit(&self->backlight_pwm);
     } else if (self->backlight_inout.base.type == &digitalio_digitalinout_type) {
         common_hal_digitalio_digitalinout_deinit(&self->backlight_inout);
     }
@@ -423,7 +431,7 @@ void release_display(displayio_display_obj_t* self) {
 }
 
 void reset_display(displayio_display_obj_t* self) {
-    self->auto_refresh = true;
+    common_hal_displayio_display_set_auto_refresh(self, true);
     self->auto_brightness = true;
     common_hal_displayio_display_show(self, NULL);
 }
