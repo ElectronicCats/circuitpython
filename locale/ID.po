@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-17 18:03-0700\n"
+"POT-Creation-Date: 2020-08-27 11:21-0400\n"
 "PO-Revision-Date: 2020-07-06 18:10+0000\n"
 "Last-Translator: oon arfiandwi <oon.arfiandwi@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -72,13 +72,17 @@ msgstr ""
 msgid "%q in use"
 msgstr "%q sedang digunakan"
 
-#: py/obj.c
+#: extmod/moductypes.c ports/atmel-samd/common-hal/pulseio/PulseIn.c
+#: ports/cxd56/common-hal/pulseio/PulseIn.c
+#: ports/nrf/common-hal/pulseio/PulseIn.c
+#: ports/stm/common-hal/pulseio/PulseIn.c py/obj.c py/objstr.c
+#: py/objstrunicode.c
 msgid "%q index out of range"
 msgstr "%q indeks di luar batas"
 
 #: py/obj.c
-msgid "%q indices must be integers, not %s"
-msgstr "indeks %q harus bilangan bulat, bukan %s"
+msgid "%q indices must be integers, not %q"
+msgstr ""
 
 #: shared-bindings/vectorio/Polygon.c
 msgid "%q list must be a list"
@@ -116,8 +120,40 @@ msgstr "%q() mengambil posisi argumen %d tapi %d yang diberikan"
 msgid "'%q' argument required"
 msgstr "'%q' argumen dibutuhkan"
 
-#: py/objarray.c
-msgid "'%q' object is not bytes-like"
+#: py/runtime.c
+msgid "'%q' object cannot assign attribute '%q'"
+msgstr ""
+
+#: py/proto.c
+msgid "'%q' object does not support '%q'"
+msgstr ""
+
+#: py/obj.c
+msgid "'%q' object does not support item assignment"
+msgstr ""
+
+#: py/obj.c
+msgid "'%q' object does not support item deletion"
+msgstr ""
+
+#: py/runtime.c
+msgid "'%q' object has no attribute '%q'"
+msgstr ""
+
+#: py/runtime.c
+msgid "'%q' object is not an iterator"
+msgstr ""
+
+#: py/objtype.c py/runtime.c
+msgid "'%q' object is not callable"
+msgstr ""
+
+#: py/runtime.c
+msgid "'%q' object is not iterable"
+msgstr ""
+
+#: py/obj.c
+msgid "'%q' object is not subscriptable"
 msgstr ""
 
 #: py/emitinlinethumb.c py/emitinlinextensa.c
@@ -170,48 +206,6 @@ msgstr "'%s' integer %d tidak dalam kisaran %d..%d"
 msgid "'%s' integer 0x%x does not fit in mask 0x%x"
 msgstr "'%s' integer 0x%x tidak cukup didalam mask 0x%x"
 
-#: py/runtime.c
-msgid "'%s' object cannot assign attribute '%q'"
-msgstr "Objek '%s' tidak dapat menetapkan atribut '%q'"
-
-#: py/proto.c
-msgid "'%s' object does not support '%q'"
-msgstr "Objek '%s' tidak mendukung '%q'"
-
-#: py/obj.c
-#, c-format
-msgid "'%s' object does not support item assignment"
-msgstr "Objek '%s' tidak mendukung penetapan item"
-
-#: py/obj.c
-#, c-format
-msgid "'%s' object does not support item deletion"
-msgstr "Objek '%s' tidak mendukung penghapusan item"
-
-#: py/runtime.c
-msgid "'%s' object has no attribute '%q'"
-msgstr "Objek '%s' tidak memiliki atribut '%q'"
-
-#: py/runtime.c
-#, c-format
-msgid "'%s' object is not an iterator"
-msgstr "Objek '%s' bukan iterator"
-
-#: py/objtype.c py/runtime.c
-#, c-format
-msgid "'%s' object is not callable"
-msgstr "Objek '%s' tidak dapat dipanggil"
-
-#: py/runtime.c
-#, c-format
-msgid "'%s' object is not iterable"
-msgstr "'%s' objek tidak dapat diulang"
-
-#: py/obj.c
-#, c-format
-msgid "'%s' object is not subscriptable"
-msgstr "Objek '%s' tidak dapat disubkripsikan"
-
 #: py/objstr.c
 msgid "'=' alignment not allowed in string format specifier"
 msgstr "'=' perataan tidak diizinkan dalam penentu format string"
@@ -225,12 +219,12 @@ msgid "'align' requires 1 argument"
 msgstr "'align' membutuhkan 1 argumen"
 
 #: py/compile.c
-msgid "'async for' or 'async with' outside async function"
-msgstr "'async for' atau 'async with' di luar fungsi async"
-
-#: py/compile.c
 msgid "'await' outside function"
 msgstr "'await' diluar fungsi"
+
+#: py/compile.c
+msgid "'await', 'async for' or 'async with' outside async function"
+msgstr ""
 
 #: py/compile.c
 msgid "'break' outside loop"
@@ -239,6 +233,10 @@ msgstr "'break' diluar loop"
 #: py/compile.c
 msgid "'continue' outside loop"
 msgstr "'continue' diluar loop"
+
+#: py/objgenerator.c
+msgid "'coroutine' object is not an iterator"
+msgstr ""
 
 #: py/compile.c
 msgid "'data' requires at least 2 arguments"
@@ -310,7 +308,7 @@ msgstr "Semua channel event sedang digunakan"
 msgid "All sync event channels in use"
 msgstr "Semua channel event yang disinkronisasi sedang digunakan"
 
-#: shared-bindings/pulseio/PWMOut.c
+#: shared-bindings/pwmio/PWMOut.c
 msgid "All timers for this pin are in use"
 msgstr "Semua timer untuk pin ini sedang digunakan"
 
@@ -322,7 +320,7 @@ msgstr "Semua timer untuk pin ini sedang digunakan"
 #: ports/cxd56/common-hal/pulseio/PulseOut.c
 #: ports/nrf/common-hal/audiopwmio/PWMAudioOut.c
 #: ports/nrf/common-hal/pulseio/PulseIn.c ports/nrf/peripherals/nrf/timers.c
-#: shared-bindings/pulseio/PWMOut.c
+#: ports/stm/peripherals/timers.c shared-bindings/pwmio/PWMOut.c
 msgid "All timers in use"
 msgstr "Semua timer sedang digunakan"
 
@@ -457,6 +455,10 @@ msgstr "Panjang buffer %d terlalu besar. Itu harus kurang dari %d"
 msgid "Buffer length must be a multiple of 512"
 msgstr "Panjang buffer harus kelipatan 512"
 
+#: ports/stm/common-hal/sdioio/SDCard.c
+msgid "Buffer must be a multiple of 512 bytes"
+msgstr ""
+
 #: shared-bindings/bitbangio/I2C.c shared-bindings/busio/I2C.c
 msgid "Buffer must be at least length 1"
 msgstr "Penyangga harus memiliki panjang setidaknya 1"
@@ -564,7 +566,7 @@ msgstr "Tidak dapat transfer tanpa pin MOSI dan MISO."
 msgid "Cannot unambiguously get sizeof scalar"
 msgstr "tidak dapat mendapatkan ukuran scalar secara tidak ambigu"
 
-#: ports/stm/common-hal/pulseio/PWMOut.c
+#: ports/stm/common-hal/pwmio/PWMOut.c
 msgid "Cannot vary frequency on a timer that is already in use"
 msgstr ""
 "Tidak dapat membuat variasi frekuensi pada penghitung waktu yang sudah "
@@ -638,27 +640,31 @@ msgstr ""
 msgid "Could not initialize UART"
 msgstr "Tidak dapat menginisialisasi UART"
 
-#: ports/stm/common-hal/pulseio/PWMOut.c
+#: ports/stm/common-hal/pwmio/PWMOut.c
 msgid "Could not initialize channel"
 msgstr "Tidak dapat menginisialisasi kanal"
 
-#: ports/stm/common-hal/pulseio/PWMOut.c
+#: ports/stm/common-hal/pwmio/PWMOut.c
 msgid "Could not initialize timer"
 msgstr "Tidak dapat menginisialisasi timer"
 
-#: ports/stm/common-hal/pulseio/PWMOut.c
+#: ports/stm/common-hal/pwmio/PWMOut.c
 msgid "Could not re-init channel"
 msgstr "Tidak dapat menginisialisasi ulang kanal"
 
-#: ports/stm/common-hal/pulseio/PWMOut.c
+#: ports/stm/common-hal/pwmio/PWMOut.c
 msgid "Could not re-init timer"
 msgstr "Tidak dapat menginisialisasi ulang timer"
 
-#: ports/stm/common-hal/pulseio/PWMOut.c
+#: ports/stm/common-hal/pwmio/PWMOut.c
 msgid "Could not restart PWM"
 msgstr "Tidak dapat memulai ulang PWM"
 
-#: ports/stm/common-hal/pulseio/PWMOut.c
+#: shared-bindings/_bleio/Adapter.c
+msgid "Could not set address"
+msgstr ""
+
+#: ports/stm/common-hal/pwmio/PWMOut.c
 msgid "Could not start PWM"
 msgstr "Tidak dapat memulai PWM"
 
@@ -758,7 +764,7 @@ msgstr "Error pada regex"
 
 #: shared-bindings/aesio/aes.c shared-bindings/busio/SPI.c
 #: shared-bindings/microcontroller/Pin.c
-#: shared-bindings/neopixel_write/__init__.c shared-bindings/pulseio/PulseOut.c
+#: shared-bindings/neopixel_write/__init__.c
 #: shared-bindings/terminalio/Terminal.c
 msgid "Expected a %q"
 msgstr "Diharapkan %q"
@@ -790,7 +796,7 @@ msgstr "Diharapkan tuple dengan panjang %d, didapatkan %d"
 msgid "Extended advertisements with scan response not supported."
 msgstr "Penyebaran yang diperluas dengan respon pindai tidak didukung."
 
-#: extmod/ulab/code/fft.c
+#: extmod/ulab/code/fft/fft.c
 msgid "FFT is defined for ndarrays only"
 msgstr "FFT didefinisikan hanya untuk ndarrays"
 
@@ -841,12 +847,17 @@ msgstr "Gagal menulis flash internal."
 msgid "File exists"
 msgstr "File sudah ada"
 
+#: shared-module/framebufferio/FramebufferDisplay.c
+#, c-format
+msgid "Framebuffer requires %d bytes"
+msgstr ""
+
 #: ports/atmel-samd/common-hal/frequencyio/FrequencyIn.c
 msgid "Frequency captured is above capability. Capture Paused."
 msgstr ""
 "Frekuensi yang ditangkap berada di atas kemampuan. Penangkapan Ditunda."
 
-#: ports/stm/common-hal/pulseio/PWMOut.c
+#: ports/stm/common-hal/pwmio/PWMOut.c
 msgid "Frequency must match existing PWMOut using this timer"
 msgstr "Frekuensi harus cocok dengan PWMOut yang ada menggunakan timer ini"
 
@@ -866,7 +877,7 @@ msgid "Group full"
 msgstr "Grup penuh"
 
 #: ports/mimxrt10xx/common-hal/busio/SPI.c ports/stm/common-hal/busio/I2C.c
-#: ports/stm/common-hal/busio/SPI.c
+#: ports/stm/common-hal/busio/SPI.c ports/stm/common-hal/sdioio/SDCard.c
 msgid "Hardware busy, try alternative pins"
 msgstr "Perangkat keras sibuk, coba pin alternatif"
 
@@ -881,6 +892,10 @@ msgstr "operasi I/O pada file tertutup"
 #: ports/stm/common-hal/busio/I2C.c
 msgid "I2C Init Error"
 msgstr "Gagal Inisialisasi I2C"
+
+#: shared-bindings/audiobusio/I2SOut.c
+msgid "I2SOut not available"
+msgstr ""
 
 #: shared-bindings/aesio/aes.c
 #, c-format
@@ -929,6 +944,11 @@ msgstr ""
 msgid "Invalid %q pin"
 msgstr "%q pada tidak valid"
 
+#: ports/stm/common-hal/busio/I2C.c ports/stm/common-hal/busio/SPI.c
+#: ports/stm/common-hal/busio/UART.c ports/stm/common-hal/sdioio/SDCard.c
+msgid "Invalid %q pin selection"
+msgstr ""
+
 #: ports/stm/common-hal/analogio/AnalogIn.c
 msgid "Invalid ADC Unit value"
 msgstr "Nilai Unit ADC tidak valid"
@@ -941,23 +961,11 @@ msgstr "File BMP tidak valid"
 msgid "Invalid DAC pin supplied"
 msgstr "Pin DAC yang diberikan tidak valid"
 
-#: ports/stm/common-hal/busio/I2C.c
-msgid "Invalid I2C pin selection"
-msgstr "Pilihan pin I2C tidak valid"
-
-#: ports/atmel-samd/common-hal/pulseio/PWMOut.c
-#: ports/cxd56/common-hal/pulseio/PWMOut.c
-#: ports/nrf/common-hal/pulseio/PWMOut.c shared-bindings/pulseio/PWMOut.c
+#: ports/atmel-samd/common-hal/pwmio/PWMOut.c
+#: ports/cxd56/common-hal/pwmio/PWMOut.c ports/nrf/common-hal/pwmio/PWMOut.c
+#: shared-bindings/pwmio/PWMOut.c
 msgid "Invalid PWM frequency"
 msgstr "Frekuensi PWM tidak valid"
-
-#: ports/stm/common-hal/busio/SPI.c
-msgid "Invalid SPI pin selection"
-msgstr "Pilihan pin SPI tidak valid"
-
-#: ports/stm/common-hal/busio/UART.c
-msgid "Invalid UART pin selection"
-msgstr "Pilihan pin UART tidak valid"
 
 #: py/moduerrno.c shared-module/rgbmatrix/RGBMatrix.c
 msgid "Invalid argument"
@@ -995,7 +1003,7 @@ msgstr "File tidak valid"
 msgid "Invalid format chunk size"
 msgstr "Ukuran potongan format tidak valid"
 
-#: ports/stm/common-hal/pulseio/PWMOut.c
+#: ports/stm/common-hal/pwmio/PWMOut.c
 msgid "Invalid frequency supplied"
 msgstr "Frekuensi yang diberikan tidak valid"
 
@@ -1013,8 +1021,8 @@ msgid "Invalid phase"
 msgstr "Fase tidak valid"
 
 #: ports/atmel-samd/common-hal/audioio/AudioOut.c
-#: ports/atmel-samd/common-hal/touchio/TouchIn.c
-#: shared-bindings/pulseio/PWMOut.c shared-module/rgbmatrix/RGBMatrix.c
+#: ports/atmel-samd/common-hal/touchio/TouchIn.c shared-bindings/pwmio/PWMOut.c
+#: shared-module/rgbmatrix/RGBMatrix.c
 msgid "Invalid pin"
 msgstr "Pin tidak valid"
 
@@ -1038,7 +1046,7 @@ msgstr "Pin untuk channel kanan tidak valid"
 msgid "Invalid pins"
 msgstr "Pin-pin tidak valid"
 
-#: ports/stm/common-hal/pulseio/PWMOut.c
+#: ports/stm/common-hal/pwmio/PWMOut.c
 msgid "Invalid pins for PWMOut"
 msgstr "Pin untuk PWMOut tidak valid"
 
@@ -1220,7 +1228,7 @@ msgstr ""
 msgid "No long integer support"
 msgstr ""
 
-#: ports/stm/common-hal/pulseio/PWMOut.c
+#: ports/stm/common-hal/pwmio/PWMOut.c
 msgid "No more timers available on this pin."
 msgstr ""
 
@@ -1255,6 +1263,10 @@ msgstr "Tidak dapat menyambungkan ke AP"
 msgid "Not playing"
 msgstr ""
 
+#: main.c
+msgid "Not running saved code.\n"
+msgstr ""
+
 #: shared-bindings/util.c
 msgid ""
 "Object has been deinitialized and can no longer be used. Create a new object."
@@ -1285,12 +1297,12 @@ msgstr ""
 msgid "Oversample must be multiple of 8."
 msgstr ""
 
-#: shared-bindings/pulseio/PWMOut.c
+#: shared-bindings/pwmio/PWMOut.c
 msgid ""
 "PWM duty_cycle must be between 0 and 65535 inclusive (16 bit resolution)"
 msgstr ""
 
-#: shared-bindings/pulseio/PWMOut.c
+#: shared-bindings/pwmio/PWMOut.c
 msgid ""
 "PWM frequency not writable when variable_frequency is False on construction."
 msgstr ""
@@ -1340,8 +1352,13 @@ msgstr "Tambahkan module apapun pada filesystem\n"
 msgid "Polygon needs at least 3 points"
 msgstr ""
 
-#: shared-bindings/ps2io/Ps2.c
-msgid "Pop from an empty Ps2 buffer"
+#: ports/atmel-samd/common-hal/pulseio/PulseOut.c
+#: ports/cxd56/common-hal/pulseio/PulseOut.c
+#: ports/nrf/common-hal/pulseio/PulseOut.c
+#: ports/stm/common-hal/pulseio/PulseOut.c
+msgid ""
+"Port does not accept pins or frequency. Construct and pass a PWMOut Carrier "
+"instead"
 msgstr ""
 
 #: shared-bindings/_bleio/Adapter.c
@@ -1358,11 +1375,7 @@ msgstr ""
 msgid "Pull not used when direction is output."
 msgstr ""
 
-#: ports/stm/common-hal/pulseio/PulseIn.c
-msgid "PulseIn not supported on this chip"
-msgstr ""
-
-#: ports/stm/common-hal/pulseio/PulseOut.c
+#: ports/stm/ref/pulseout-pre-timeralloc.c
 msgid "PulseOut not supported on this chip"
 msgstr ""
 
@@ -1427,13 +1440,8 @@ msgid "Row entry must be digitalio.DigitalInOut"
 msgstr ""
 
 #: main.c
-msgid "Running in safe mode! Auto-reload is off.\n"
-msgstr "Berjalan di mode aman(safe mode)! Auto-reload tidak aktif.\n"
-
-#: main.c
-msgid "Running in safe mode! Not running saved code.\n"
+msgid "Running in safe mode! "
 msgstr ""
-"Berjalan di mode aman(safe mode)! tidak menjalankan kode yang tersimpan.\n"
 
 #: shared-module/sdcardio/SDCard.c
 msgid "SD card CSD format not supported"
@@ -1443,6 +1451,16 @@ msgstr ""
 #: ports/mimxrt10xx/common-hal/busio/I2C.c ports/nrf/common-hal/busio/I2C.c
 msgid "SDA or SCL needs a pull up"
 msgstr "SDA atau SCL membutuhkan pull up"
+
+#: ports/stm/common-hal/sdioio/SDCard.c
+#, c-format
+msgid "SDIO GetCardInfo Error %d"
+msgstr ""
+
+#: ports/stm/common-hal/sdioio/SDCard.c
+#, c-format
+msgid "SDIO Init Error %d"
+msgstr ""
 
 #: ports/stm/common-hal/busio/SPI.c
 msgid "SPI Init Error"
@@ -1571,6 +1589,11 @@ msgstr ""
 #: ports/nrf/common-hal/_bleio/Adapter.c
 #, c-format
 msgid "Timeout is too long: Maximum timeout length is %d seconds"
+msgstr ""
+
+#: ports/stm/common-hal/pwmio/PWMOut.c
+msgid ""
+"Timer was reserved for internal use - declare PWM pins earlier in the program"
 msgstr ""
 
 #: ports/atmel-samd/common-hal/audiobusio/I2SOut.c
@@ -1795,15 +1818,14 @@ msgid "__init__() should return None"
 msgstr ""
 
 #: py/objtype.c
-#, c-format
-msgid "__init__() should return None, not '%s'"
+msgid "__init__() should return None, not '%q'"
 msgstr ""
 
 #: py/objobject.c
 msgid "__new__ arg must be a user-type"
 msgstr ""
 
-#: extmod/modubinascii.c extmod/moduhashlib.c
+#: extmod/modubinascii.c extmod/moduhashlib.c py/objarray.c
 msgid "a bytes-like object is required"
 msgstr "sebuah objek menyerupai byte (bytes-like) dibutuhkan"
 
@@ -1824,7 +1846,7 @@ msgstr ""
 msgid "addresses is empty"
 msgstr ""
 
-#: extmod/ulab/code/vectorise.c
+#: extmod/ulab/code/vector/vectorise.c
 msgid "arctan2 is implemented for scalars and ndarrays only"
 msgstr ""
 
@@ -1832,12 +1854,16 @@ msgstr ""
 msgid "arg is an empty sequence"
 msgstr ""
 
-#: extmod/ulab/code/numerical.c
+#: extmod/ulab/code/numerical/numerical.c
 msgid "argsort argument must be an ndarray"
 msgstr ""
 
 #: py/runtime.c
 msgid "argument has wrong type"
+msgstr ""
+
+#: extmod/ulab/code/linalg/linalg.c
+msgid "argument must be ndarray"
 msgstr ""
 
 #: py/argcheck.c shared-bindings/_stage/__init__.c
@@ -1849,7 +1875,7 @@ msgstr "argumen num/types tidak cocok"
 msgid "argument should be a '%q' not a '%q'"
 msgstr ""
 
-#: extmod/ulab/code/linalg.c
+#: extmod/ulab/code/linalg/linalg.c
 msgid "arguments must be ndarrays"
 msgstr ""
 
@@ -1857,7 +1883,7 @@ msgstr ""
 msgid "array/bytes required on right side"
 msgstr ""
 
-#: extmod/ulab/code/numerical.c
+#: extmod/ulab/code/numerical/numerical.c
 msgid "attempt to get argmin/argmax of an empty sequence"
 msgstr ""
 
@@ -1865,15 +1891,15 @@ msgstr ""
 msgid "attributes not supported yet"
 msgstr ""
 
-#: extmod/ulab/code/numerical.c
+#: extmod/ulab/code/numerical/numerical.c
 msgid "axis must be -1, 0, None, or 1"
 msgstr ""
 
-#: extmod/ulab/code/numerical.c
+#: extmod/ulab/code/numerical/numerical.c
 msgid "axis must be -1, 0, or 1"
 msgstr ""
 
-#: extmod/ulab/code/numerical.c
+#: extmod/ulab/code/numerical/numerical.c
 msgid "axis must be None, 0, or 1"
 msgstr ""
 
@@ -1947,7 +1973,7 @@ msgstr "byte > 8 bit tidak didukung"
 msgid "bytes value out of range"
 msgstr ""
 
-#: ports/atmel-samd/bindings/samd/Clock.c
+#: ports/atmel-samd/bindings/samd/Clock.c ports/atmel-samd/common-hal/rtc/RTC.c
 msgid "calibration is out of range"
 msgstr "kalibrasi keluar dari jangkauan"
 
@@ -1979,47 +2005,17 @@ msgstr ""
 msgid "can't assign to expression"
 msgstr "tidak dapat menetapkan ke ekspresi"
 
-#: py/obj.c
-#, c-format
-msgid "can't convert %s to complex"
-msgstr ""
-
-#: py/obj.c
-#, c-format
-msgid "can't convert %s to float"
-msgstr ""
-
-#: py/obj.c
-#, c-format
-msgid "can't convert %s to int"
+#: py/obj.c py/objint.c shared-bindings/i2cperipheral/I2CPeripheral.c
+#: shared-module/_pixelbuf/PixelBuf.c
+msgid "can't convert %q to %q"
 msgstr ""
 
 #: py/objstr.c
 msgid "can't convert '%q' object to %q implicitly"
 msgstr ""
 
-#: py/objint.c
-msgid "can't convert NaN to int"
-msgstr ""
-
-#: shared-bindings/i2cperipheral/I2CPeripheral.c
-msgid "can't convert address to int"
-msgstr ""
-
-#: py/objint.c
-msgid "can't convert inf to int"
-msgstr ""
-
 #: py/obj.c
-msgid "can't convert to complex"
-msgstr ""
-
-#: py/obj.c
-msgid "can't convert to float"
-msgstr ""
-
-#: py/obj.c
-msgid "can't convert to int"
+msgid "can't convert to %q"
 msgstr ""
 
 #: py/objstr.c
@@ -2180,15 +2176,15 @@ msgstr ""
 msgid "conversion to object"
 msgstr ""
 
-#: extmod/ulab/code/filter.c
+#: extmod/ulab/code/filter/filter.c
 msgid "convolve arguments must be linear arrays"
 msgstr ""
 
-#: extmod/ulab/code/filter.c
+#: extmod/ulab/code/filter/filter.c
 msgid "convolve arguments must be ndarrays"
 msgstr ""
 
-#: extmod/ulab/code/filter.c
+#: extmod/ulab/code/filter/filter.c
 msgid "convolve arguments must not be empty"
 msgstr ""
 
@@ -2196,7 +2192,7 @@ msgstr ""
 msgid "could not broadast input array from shape"
 msgstr ""
 
-#: extmod/ulab/code/poly.c
+#: extmod/ulab/code/poly/poly.c
 msgid "could not invert Vandermonde matrix"
 msgstr ""
 
@@ -2204,15 +2200,15 @@ msgstr ""
 msgid "couldn't determine SD card version"
 msgstr ""
 
-#: extmod/ulab/code/approx.c
+#: extmod/ulab/code/approx/approx.c
 msgid "data must be iterable"
 msgstr ""
 
-#: extmod/ulab/code/approx.c
+#: extmod/ulab/code/approx/approx.c
 msgid "data must be of equal length"
 msgstr ""
 
-#: extmod/ulab/code/numerical.c
+#: extmod/ulab/code/numerical/numerical.c
 msgid "ddof must be smaller than length of data set"
 msgstr ""
 
@@ -2241,7 +2237,7 @@ msgstr ""
 msgid "dict update sequence has wrong length"
 msgstr ""
 
-#: extmod/ulab/code/numerical.c
+#: extmod/ulab/code/numerical/numerical.c
 msgid "diff argument must be an ndarray"
 msgstr ""
 
@@ -2344,11 +2340,11 @@ msgstr ""
 msgid "filesystem must provide mount method"
 msgstr ""
 
-#: extmod/ulab/code/vectorise.c
+#: extmod/ulab/code/vector/vectorise.c
 msgid "first argument must be a callable"
 msgstr ""
 
-#: extmod/ulab/code/approx.c
+#: extmod/ulab/code/approx/approx.c
 msgid "first argument must be a function"
 msgstr ""
 
@@ -2356,7 +2352,7 @@ msgstr ""
 msgid "first argument must be an iterable"
 msgstr ""
 
-#: extmod/ulab/code/vectorise.c
+#: extmod/ulab/code/vector/vectorise.c
 msgid "first argument must be an ndarray"
 msgstr ""
 
@@ -2368,7 +2364,7 @@ msgstr ""
 msgid "flattening order must be either 'C', or 'F'"
 msgstr ""
 
-#: extmod/ulab/code/numerical.c
+#: extmod/ulab/code/numerical/numerical.c
 msgid "flip argument must be an ndarray"
 msgstr ""
 
@@ -2401,11 +2397,11 @@ msgstr "fungsi diharapkan setidaknya %d argumen, hanya mendapatkan %d"
 msgid "function got multiple values for argument '%q'"
 msgstr "fungsi mendapatkan nilai ganda untuk argumen '%q'"
 
-#: extmod/ulab/code/approx.c
+#: extmod/ulab/code/approx/approx.c
 msgid "function has the same sign at the ends of interval"
 msgstr ""
 
-#: extmod/ulab/code/compare.c
+#: extmod/ulab/code/compare/compare.c
 msgid "function is implemented for scalars and ndarrays only"
 msgstr ""
 
@@ -2427,7 +2423,7 @@ msgstr "fungsi kehilangan argumen keyword '%q' yang dibutuhkan"
 msgid "function missing required positional argument #%d"
 msgstr "fungsi kehilangan argumen posisi #%d yang dibutuhkan"
 
-#: py/argcheck.c py/bc.c py/objnamedtuple.c
+#: py/argcheck.c py/bc.c py/objnamedtuple.c shared-bindings/time/__init__.c
 #, c-format
 msgid "function takes %d positional arguments but %d were given"
 msgstr "fungsi mengambil posisi argumen %d tapi %d yang diberikan"
@@ -2476,10 +2472,7 @@ msgstr "lapisan (padding) tidak benar"
 msgid "index is out of bounds"
 msgstr ""
 
-#: ports/atmel-samd/common-hal/pulseio/PulseIn.c
-#: ports/cxd56/common-hal/pulseio/PulseIn.c
-#: ports/nrf/common-hal/pulseio/PulseIn.c
-#: ports/stm/common-hal/pulseio/PulseIn.c py/obj.c
+#: py/obj.c
 msgid "index out of range"
 msgstr "index keluar dari jangkauan"
 
@@ -2491,7 +2484,7 @@ msgstr ""
 msgid "indices must be integers, slices, or Boolean lists"
 msgstr ""
 
-#: extmod/ulab/code/approx.c
+#: extmod/ulab/code/approx/approx.c
 msgid "initial values must be iterable"
 msgstr ""
 
@@ -2499,35 +2492,35 @@ msgstr ""
 msgid "inline assembler must be a function"
 msgstr "inline assembler harus sebuah fungsi"
 
-#: extmod/ulab/code/create.c
+#: extmod/ulab/code/ulab_create.c
 msgid "input argument must be an integer or a 2-tuple"
 msgstr ""
 
-#: extmod/ulab/code/fft.c
+#: extmod/ulab/code/fft/fft.c
 msgid "input array length must be power of 2"
 msgstr ""
 
-#: extmod/ulab/code/poly.c
+#: extmod/ulab/code/poly/poly.c
 msgid "input data must be an iterable"
 msgstr ""
 
-#: extmod/ulab/code/linalg.c
+#: extmod/ulab/code/linalg/linalg.c
 msgid "input matrix is asymmetric"
 msgstr ""
 
-#: extmod/ulab/code/linalg.c
+#: extmod/ulab/code/linalg/linalg.c
 msgid "input matrix is singular"
 msgstr ""
 
-#: extmod/ulab/code/linalg.c
+#: extmod/ulab/code/linalg/linalg.c
 msgid "input must be square matrix"
 msgstr ""
 
-#: extmod/ulab/code/numerical.c
+#: extmod/ulab/code/numerical/numerical.c
 msgid "input must be tuple, list, range, or ndarray"
 msgstr ""
 
-#: extmod/ulab/code/poly.c
+#: extmod/ulab/code/poly/poly.c
 msgid "input vectors must be of equal length"
 msgstr ""
 
@@ -2539,7 +2532,7 @@ msgstr ""
 msgid "integer required"
 msgstr ""
 
-#: extmod/ulab/code/approx.c
+#: extmod/ulab/code/approx/approx.c
 msgid "interp is defined for 1D arrays of equal length"
 msgstr ""
 
@@ -2609,7 +2602,7 @@ msgstr ""
 msgid "iterables are not of the same length"
 msgstr ""
 
-#: extmod/ulab/code/linalg.c
+#: extmod/ulab/code/linalg/linalg.c
 msgid "iterations did not converge"
 msgstr ""
 
@@ -2673,11 +2666,11 @@ msgstr ""
 msgid "math domain error"
 msgstr ""
 
-#: extmod/ulab/code/linalg.c
+#: extmod/ulab/code/linalg/linalg.c
 msgid "matrix dimensions do not match"
 msgstr ""
 
-#: extmod/ulab/code/linalg.c
+#: extmod/ulab/code/linalg/linalg.c
 msgid "matrix is not positive definite"
 msgstr ""
 
@@ -2704,7 +2697,7 @@ msgstr ""
 msgid "module not found"
 msgstr "modul tidak ditemukan"
 
-#: extmod/ulab/code/poly.c
+#: extmod/ulab/code/poly/poly.c
 msgid "more degrees of freedom than data points"
 msgstr ""
 
@@ -2728,7 +2721,7 @@ msgstr ""
 msgid "must use keyword argument for key function"
 msgstr ""
 
-#: extmod/ulab/code/numerical.c
+#: extmod/ulab/code/numerical/numerical.c
 msgid "n must be between 0, and 9"
 msgstr ""
 
@@ -2826,17 +2819,16 @@ msgstr ""
 msgid "not enough arguments for format string"
 msgstr ""
 
-#: extmod/ulab/code/poly.c
+#: extmod/ulab/code/poly/poly.c
 msgid "number of arguments must be 2, or 3"
 msgstr ""
 
-#: extmod/ulab/code/create.c
+#: extmod/ulab/code/ulab_create.c
 msgid "number of points must be at least 2"
 msgstr ""
 
 #: py/obj.c
-#, c-format
-msgid "object '%s' is not a tuple or list"
+msgid "object '%q' is not a tuple or list"
 msgstr ""
 
 #: py/obj.c
@@ -2872,8 +2864,7 @@ msgid "object not iterable"
 msgstr ""
 
 #: py/obj.c
-#, c-format
-msgid "object of type '%s' has no len()"
+msgid "object of type '%q' has no len()"
 msgstr ""
 
 #: py/obj.c
@@ -2902,12 +2893,12 @@ msgstr ""
 msgid "only slices with step=1 (aka None) are supported"
 msgstr ""
 
-#: extmod/ulab/code/compare.c extmod/ulab/code/ndarray.c
-#: extmod/ulab/code/vectorise.c
+#: extmod/ulab/code/compare/compare.c extmod/ulab/code/ndarray.c
+#: extmod/ulab/code/vector/vectorise.c
 msgid "operands could not be broadcast together"
 msgstr ""
 
-#: extmod/ulab/code/numerical.c
+#: extmod/ulab/code/numerical/numerical.c
 msgid "operation is not implemented on ndarrays"
 msgstr ""
 
@@ -2922,6 +2913,14 @@ msgstr ""
 #: py/modbuiltins.c
 #, c-format
 msgid "ord() expected a character, but string of length %d found"
+msgstr ""
+
+#: shared-bindings/displayio/Bitmap.c
+msgid "out of range of source"
+msgstr ""
+
+#: shared-bindings/displayio/Bitmap.c
+msgid "out of range of target"
 msgstr ""
 
 #: py/objint_mpz.c
@@ -2967,20 +2966,9 @@ msgstr ""
 #: ports/atmel-samd/common-hal/pulseio/PulseIn.c
 #: ports/cxd56/common-hal/pulseio/PulseIn.c
 #: ports/nrf/common-hal/pulseio/PulseIn.c
-#: ports/stm/common-hal/pulseio/PulseIn.c
-msgid "pop from an empty PulseIn"
-msgstr "Muncul dari PulseIn yang kosong"
-
-#: py/objset.c
-msgid "pop from an empty set"
-msgstr ""
-
-#: py/objlist.c
-msgid "pop from empty list"
-msgstr ""
-
-#: py/objdict.c
-msgid "popitem(): dictionary is empty"
+#: ports/stm/common-hal/pulseio/PulseIn.c py/objdict.c py/objlist.c py/objset.c
+#: shared-bindings/ps2io/Ps2.c
+msgid "pop from empty %q"
 msgstr ""
 
 #: py/objint_mpz.c
@@ -2999,7 +2987,7 @@ msgstr "antrian meluap (overflow)"
 msgid "raw f-strings are not implemented"
 msgstr ""
 
-#: extmod/ulab/code/fft.c
+#: extmod/ulab/code/fft/fft.c
 msgid "real and imaginary parts must be of equal length"
 msgstr ""
 
@@ -3072,7 +3060,7 @@ msgstr ""
 msgid "single '}' encountered in format string"
 msgstr ""
 
-#: extmod/ulab/code/linalg.c
+#: extmod/ulab/code/linalg/linalg.c
 msgid "size is defined for ndarrays only"
 msgstr ""
 
@@ -3096,20 +3084,24 @@ msgstr ""
 msgid "soft reboot\n"
 msgstr "memulai ulang software(soft reboot)\n"
 
-#: extmod/ulab/code/numerical.c
+#: extmod/ulab/code/numerical/numerical.c
 msgid "sort argument must be an ndarray"
 msgstr ""
 
-#: extmod/ulab/code/filter.c
+#: extmod/ulab/code/filter/filter.c
 msgid "sos array must be of shape (n_section, 6)"
 msgstr ""
 
-#: extmod/ulab/code/filter.c
+#: extmod/ulab/code/filter/filter.c
 msgid "sos[:, 3] should be all ones"
 msgstr ""
 
-#: extmod/ulab/code/filter.c
+#: extmod/ulab/code/filter/filter.c
 msgid "sosfilt requires iterable arguments"
+msgstr ""
+
+#: shared-bindings/displayio/Bitmap.c
+msgid "source palette too large"
 msgstr ""
 
 #: py/objstr.c
@@ -3137,12 +3129,7 @@ msgid "stream operation not supported"
 msgstr ""
 
 #: py/objstrunicode.c
-msgid "string index out of range"
-msgstr ""
-
-#: py/objstrunicode.c
-#, c-format
-msgid "string indices must be integers, not %s"
+msgid "string indices must be integers, not %q"
 msgstr ""
 
 #: py/stream.c
@@ -3152,10 +3139,6 @@ msgstr ""
 #: extmod/moductypes.c
 msgid "struct: cannot index"
 msgstr "struct: tidak bisa melakukan index"
-
-#: extmod/moductypes.c
-msgid "struct: index out of range"
-msgstr "struct: index keluar dari jangkauan"
 
 #: extmod/moductypes.c
 msgid "struct: no fields"
@@ -3223,16 +3206,16 @@ msgstr ""
 msgid "too many values to unpack (expected %d)"
 msgstr ""
 
-#: extmod/ulab/code/linalg.c py/objstr.c
+#: extmod/ulab/code/approx/approx.c
+msgid "trapz is defined for 1D arrays of equal length"
+msgstr ""
+
+#: extmod/ulab/code/linalg/linalg.c
 msgid "tuple index out of range"
 msgstr ""
 
 #: py/obj.c
 msgid "tuple/list has wrong length"
-msgstr ""
-
-#: shared-bindings/_pixelbuf/PixelBuf.c
-msgid "tuple/list required on RHS"
 msgstr ""
 
 #: ports/atmel-samd/common-hal/busio/UART.c ports/nrf/common-hal/busio/UART.c
@@ -3290,8 +3273,7 @@ msgid "unknown conversion specifier %c"
 msgstr ""
 
 #: py/objstr.c
-#, c-format
-msgid "unknown format code '%c' for object of type '%s'"
+msgid "unknown format code '%c' for object of type '%q'"
 msgstr ""
 
 #: py/compile.c
@@ -3331,7 +3313,7 @@ msgid "unsupported format character '%c' (0x%x) at index %d"
 msgstr ""
 
 #: py/runtime.c
-msgid "unsupported type for %q: '%s'"
+msgid "unsupported type for %q: '%q'"
 msgstr ""
 
 #: py/runtime.c
@@ -3339,7 +3321,7 @@ msgid "unsupported type for operator"
 msgstr ""
 
 #: py/runtime.c
-msgid "unsupported types for %q: '%s', '%s'"
+msgid "unsupported types for %q: '%q', '%q'"
 msgstr ""
 
 #: py/objint.c
@@ -3351,6 +3333,10 @@ msgstr ""
 msgid "value_count must be > 0"
 msgstr ""
 
+#: extmod/ulab/code/linalg/linalg.c
+msgid "vectors must have same lengths"
+msgstr ""
+
 #: shared-bindings/watchdog/WatchDogTimer.c
 msgid "watchdog timeout must be greater than 0"
 msgstr ""
@@ -3359,7 +3345,7 @@ msgstr ""
 msgid "window must be <= interval"
 msgstr ""
 
-#: extmod/ulab/code/linalg.c
+#: extmod/ulab/code/linalg/linalg.c
 msgid "wrong argument type"
 msgstr ""
 
@@ -3367,11 +3353,11 @@ msgstr ""
 msgid "wrong index type"
 msgstr ""
 
-#: extmod/ulab/code/vectorise.c
+#: extmod/ulab/code/vector/vectorise.c
 msgid "wrong input type"
 msgstr ""
 
-#: py/objstr.c
+#: extmod/ulab/code/ulab_create.c py/objstr.c
 msgid "wrong number of arguments"
 msgstr ""
 
@@ -3383,7 +3369,7 @@ msgstr ""
 msgid "wrong operand type"
 msgstr ""
 
-#: extmod/ulab/code/vectorise.c
+#: extmod/ulab/code/vector/vectorise.c
 msgid "wrong output type"
 msgstr ""
 
@@ -3403,17 +3389,72 @@ msgstr ""
 msgid "zero step"
 msgstr ""
 
-#: extmod/ulab/code/filter.c
+#: extmod/ulab/code/filter/filter.c
 msgid "zi must be an ndarray"
 msgstr ""
 
-#: extmod/ulab/code/filter.c
+#: extmod/ulab/code/filter/filter.c
 msgid "zi must be of float type"
 msgstr ""
 
-#: extmod/ulab/code/filter.c
+#: extmod/ulab/code/filter/filter.c
 msgid "zi must be of shape (n_section, 2)"
 msgstr ""
+
+#~ msgid "%q indices must be integers, not %s"
+#~ msgstr "indeks %q harus bilangan bulat, bukan %s"
+
+#~ msgid "'%s' object cannot assign attribute '%q'"
+#~ msgstr "Objek '%s' tidak dapat menetapkan atribut '%q'"
+
+#~ msgid "'%s' object does not support '%q'"
+#~ msgstr "Objek '%s' tidak mendukung '%q'"
+
+#~ msgid "'%s' object does not support item assignment"
+#~ msgstr "Objek '%s' tidak mendukung penetapan item"
+
+#~ msgid "'%s' object does not support item deletion"
+#~ msgstr "Objek '%s' tidak mendukung penghapusan item"
+
+#~ msgid "'%s' object has no attribute '%q'"
+#~ msgstr "Objek '%s' tidak memiliki atribut '%q'"
+
+#~ msgid "'%s' object is not an iterator"
+#~ msgstr "Objek '%s' bukan iterator"
+
+#~ msgid "'%s' object is not callable"
+#~ msgstr "Objek '%s' tidak dapat dipanggil"
+
+#~ msgid "'%s' object is not iterable"
+#~ msgstr "'%s' objek tidak dapat diulang"
+
+#~ msgid "'%s' object is not subscriptable"
+#~ msgstr "Objek '%s' tidak dapat disubkripsikan"
+
+#~ msgid "Invalid I2C pin selection"
+#~ msgstr "Pilihan pin I2C tidak valid"
+
+#~ msgid "Invalid SPI pin selection"
+#~ msgstr "Pilihan pin SPI tidak valid"
+
+#~ msgid "Invalid UART pin selection"
+#~ msgstr "Pilihan pin UART tidak valid"
+
+#~ msgid "Running in safe mode! Auto-reload is off.\n"
+#~ msgstr "Berjalan di mode aman(safe mode)! Auto-reload tidak aktif.\n"
+
+#~ msgid "Running in safe mode! Not running saved code.\n"
+#~ msgstr ""
+#~ "Berjalan di mode aman(safe mode)! tidak menjalankan kode yang tersimpan.\n"
+
+#~ msgid "pop from an empty PulseIn"
+#~ msgstr "Muncul dari PulseIn yang kosong"
+
+#~ msgid "struct: index out of range"
+#~ msgstr "struct: index keluar dari jangkauan"
+
+#~ msgid "'async for' or 'async with' outside async function"
+#~ msgstr "'async for' atau 'async with' di luar fungsi async"
 
 #~ msgid "AP required"
 #~ msgstr "AP dibutuhkan"

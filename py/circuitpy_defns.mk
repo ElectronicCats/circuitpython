@@ -145,7 +145,7 @@ ifeq ($(CIRCUITPY_DIGITALIO),1)
 SRC_PATTERNS += digitalio/%
 endif
 ifeq ($(CIRCUITPY_DISPLAYIO),1)
-SRC_PATTERNS += displayio/% terminalio/% fontio/%
+SRC_PATTERNS += displayio/%
 endif
 ifeq ($(CIRCUITPY_VECTORIO),1)
 SRC_PATTERNS += vectorio/%
@@ -198,11 +198,14 @@ endif
 ifeq ($(CIRCUITPY_RGBMATRIX),1)
 SRC_PATTERNS += rgbmatrix/%
 endif
+ifeq ($(CIRCUITPY_PS2IO),1)
+SRC_PATTERNS += ps2io/%
+endif
 ifeq ($(CIRCUITPY_PULSEIO),1)
 SRC_PATTERNS += pulseio/%
 endif
-ifeq ($(CIRCUITPY_PS2IO),1)
-SRC_PATTERNS += ps2io/%
+ifeq ($(CIRCUITPY_PWMIO),1)
+SRC_PATTERNS += pwmio/%
 endif
 ifeq ($(CIRCUITPY_RANDOM),1)
 SRC_PATTERNS += random/%
@@ -222,6 +225,9 @@ endif
 ifeq ($(CIRCUITPY_SDIOIO),1)
 SRC_PATTERNS += sdioio/%
 endif
+ifeq ($(CIRCUITPY_SHARPDISPLAY),1)
+SRC_PATTERNS += sharpdisplay/%
+endif
 ifeq ($(CIRCUITPY_STAGE),1)
 SRC_PATTERNS += _stage/%
 endif
@@ -233,6 +239,9 @@ SRC_PATTERNS += struct/%
 endif
 ifeq ($(CIRCUITPY_SUPERVISOR),1)
 SRC_PATTERNS += supervisor/%
+endif
+ifeq ($(CIRCUITPY_TERMINALIO),1)
+SRC_PATTERNS += terminalio/% fontio/%
 endif
 ifeq ($(CIRCUITPY_TIME),1)
 SRC_PATTERNS += time/%
@@ -310,10 +319,11 @@ SRC_COMMON_HAL_ALL = \
 	os/__init__.c \
 	ps2io/Ps2.c \
 	ps2io/__init__.c \
-	pulseio/PWMOut.c \
 	pulseio/PulseIn.c \
 	pulseio/PulseOut.c \
 	pulseio/__init__.c \
+	pwmio/PWMOut.c \
+	pwmio/__init__.c \
 	rgbmatrix/RGBMatrix.c \
 	rgbmatrix/__init__.c \
 	rotaryio/IncrementalEncoder.c \
@@ -409,6 +419,8 @@ SRC_SHARED_MODULE_ALL = \
 	random/__init__.c \
 	rgbmatrix/RGBMatrix.c \
 	rgbmatrix/__init__.c \
+	sharpdisplay/SharpMemoryFramebuffer.c \
+	sharpdisplay/__init__.c \
 	socket/__init__.c \
 	storage/__init__.c \
 	struct/__init__.c \
