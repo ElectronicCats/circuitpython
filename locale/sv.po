@@ -5,16 +5,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-27 11:21-0400\n"
-"PO-Revision-Date: 2020-08-30 20:02+0000\n"
-"Last-Translator: Jeff Epler <jepler@gmail.com>\n"
+"POT-Creation-Date: 2020-10-06 13:26-0400\n"
+"PO-Revision-Date: 2020-10-02 22:53+0000\n"
+"Last-Translator: Jonny Bergdahl <jonny@bergdahl.it>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.2.1-dev\n"
+"X-Generator: Weblate 4.3-dev\n"
 
 #: main.c
 msgid ""
@@ -33,14 +33,6 @@ msgstr ""
 "\n"
 "Vänligen skapa ett ärende med innehållet i din CIRCUITPY-enhet på\n"
 "https://github.com/adafruit/circuitpython/issues\n"
-
-#: supervisor/shared/safe_mode.c
-msgid ""
-"\n"
-"To exit, please reset the board without "
-msgstr ""
-"\n"
-"För att avsluta, gör reset på kortet utan "
 
 #: py/obj.c
 msgid "  File \"%q\""
@@ -104,7 +96,11 @@ msgstr "%q måste vara >= 1"
 msgid "%q must be a tuple of length 2"
 msgstr "%q måste vara en tuple av längd 2"
 
-#: ports/atmel-samd/common-hal/sdioio/SDCard.c
+#: shared-bindings/canio/Match.c
+msgid "%q out of range"
+msgstr "%q utanför intervallet"
+
+#: ports/atmel-samd/common-hal/microcontroller/Pin.c
 msgid "%q pin invalid"
 msgstr "Pinne %q ogiltig"
 
@@ -279,7 +275,11 @@ msgstr "3-arguments pow() stöds inte"
 msgid "A hardware interrupt channel is already in use"
 msgstr "En kanal för hårdvaruavbrott används redan"
 
-#: shared-bindings/_bleio/Address.c
+#: ports/esp32s2/common-hal/analogio/AnalogIn.c
+msgid "ADC2 is being used by WiFi"
+msgstr ""
+
+#: shared-bindings/_bleio/Address.c shared-bindings/ipaddress/IPv4Address.c
 #, c-format
 msgid "Address must be %d bytes long"
 msgstr "Adressen måste vara %d byte lång"
@@ -288,15 +288,19 @@ msgstr "Adressen måste vara %d byte lång"
 msgid "Address type out of range"
 msgstr "Adresstyp utanför intervallet"
 
-#: ports/nrf/common-hal/busio/I2C.c
+#: ports/esp32s2/common-hal/busio/I2C.c ports/nrf/common-hal/busio/I2C.c
 msgid "All I2C peripherals are in use"
 msgstr "All I2C-kringutrustning används"
 
-#: ports/nrf/common-hal/busio/SPI.c
+#: ports/atmel-samd/common-hal/canio/Listener.c
+msgid "All RX FIFOs in use"
+msgstr "Alla RX FIFO i bruk"
+
+#: ports/esp32s2/common-hal/busio/SPI.c ports/nrf/common-hal/busio/SPI.c
 msgid "All SPI peripherals are in use"
 msgstr "All SPI-kringutrustning används"
 
-#: ports/nrf/common-hal/busio/UART.c
+#: ports/esp32s2/common-hal/busio/UART.c ports/nrf/common-hal/busio/UART.c
 msgid "All UART peripherals are in use"
 msgstr "Alla UART-kringutrustning används"
 
@@ -318,6 +322,9 @@ msgstr "Alla timers för denna pinne är i bruk"
 #: ports/atmel-samd/common-hal/pulseio/PulseIn.c
 #: ports/atmel-samd/common-hal/pulseio/PulseOut.c
 #: ports/cxd56/common-hal/pulseio/PulseOut.c
+#: ports/esp32s2/common-hal/neopixel_write/__init__.c
+#: ports/esp32s2/common-hal/pulseio/PulseIn.c
+#: ports/esp32s2/common-hal/pulseio/PulseOut.c
 #: ports/nrf/common-hal/audiopwmio/PWMAudioOut.c
 #: ports/nrf/common-hal/pulseio/PulseIn.c ports/nrf/peripherals/nrf/timers.c
 #: ports/stm/peripherals/timers.c shared-bindings/pwmio/PWMOut.c
@@ -328,10 +335,18 @@ msgstr "Alla timers används"
 msgid "Already advertising."
 msgstr "Annonserar redan."
 
+#: ports/atmel-samd/common-hal/canio/Listener.c
+msgid "Already have all-matches listener"
+msgstr "Har redan lyssnare för all-matchningar"
+
 #: shared-module/memorymonitor/AllocationAlarm.c
 #: shared-module/memorymonitor/AllocationSize.c
 msgid "Already running"
 msgstr "Kör redan"
+
+#: ports/esp32s2/common-hal/wifi/Radio.c
+msgid "Already scanning for wifi networks"
+msgstr "Skannar redan efter wifi-nätverk"
 
 #: ports/cxd56/common-hal/analogio/AnalogIn.c
 msgid "AnalogIn not supported on given pin"
@@ -376,6 +391,10 @@ msgstr "Försök att tilldela %d block"
 #: supervisor/shared/safe_mode.c
 msgid "Attempted heap allocation when MicroPython VM not running."
 msgstr "Försökte tilldela heap när MicroPython VM inte körs."
+
+#: shared-bindings/wifi/Radio.c
+msgid "Authentication failure"
+msgstr "Autentiseringsfel"
 
 #: main.c
 msgid "Auto-reload is off.\n"
@@ -440,7 +459,7 @@ msgstr "Buffert har felaktig storlek. Ska vara %d byte."
 msgid "Buffer is not a bytearray."
 msgstr "Buffert är inte en bytearray."
 
-#: shared-bindings/displayio/Display.c
+#: ports/cxd56/common-hal/camera/Camera.c shared-bindings/displayio/Display.c
 #: shared-bindings/framebufferio/FramebufferDisplay.c
 msgid "Buffer is too small"
 msgstr "Bufferten är för liten"
@@ -498,6 +517,10 @@ msgstr "Anropa super().__init__() innan du använder det ursprungliga objektet."
 msgid "Can't set CCCD on local Characteristic"
 msgstr "Kan inte ställa in CCCD på lokal karaktäristik"
 
+#: shared-bindings/_bleio/Adapter.c
+msgid "Cannot create a new Adapter; use _bleio.adapter;"
+msgstr "Det går inte att skapa en ny Adapter; använd _bleio.adapter;"
+
 #: shared-bindings/displayio/Bitmap.c
 #: shared-bindings/memorymonitor/AllocationSize.c
 #: shared-bindings/pulseio/PulseIn.c
@@ -546,6 +569,7 @@ msgstr ""
 msgid "Cannot set value when direction is input."
 msgstr "Kan inte sätta värde när riktning är input."
 
+#: ports/esp32s2/common-hal/busio/UART.c
 #: ports/mimxrt10xx/common-hal/busio/UART.c
 msgid "Cannot specify RTS or CTS in RS485 mode"
 msgstr "Det går inte att specificera RTS eller CTS i RS485-läget"
@@ -586,6 +610,10 @@ msgstr ""
 "CircuitPython är i säkert läge eftersom du tryckte på återställningsknappen "
 "under start. Tryck igen för att lämna säkert läge.\n"
 
+#: supervisor/shared/safe_mode.c
+msgid "CircuitPython was unable to allocate the heap.\n"
+msgstr "CircuitPython kunde inte allokera heap.\n"
+
 #: shared-module/bitbangio/SPI.c
 msgid "Clock pin init failed."
 msgstr "Initiering av klockpinne misslyckades."
@@ -623,6 +651,10 @@ msgstr "Skadad .mpy-fil"
 msgid "Corrupt raw code"
 msgstr "Korrupt rå kod"
 
+#: ports/cxd56/common-hal/camera/Camera.c
+msgid "Could not initialize Camera"
+msgstr "Kunde inte initiera Camera"
+
 #: ports/cxd56/common-hal/gnss/GNSS.c
 msgid "Could not initialize GNSS"
 msgstr "Kan inte initiera GNSS"
@@ -632,14 +664,15 @@ msgid "Could not initialize SDCard"
 msgstr "Kan inte initiera SD-kort"
 
 #: ports/atmel-samd/common-hal/busio/UART.c ports/cxd56/common-hal/busio/UART.c
+#: ports/esp32s2/common-hal/busio/UART.c
 msgid "Could not initialize UART"
 msgstr "Det gick inte att initiera UART"
 
-#: ports/stm/common-hal/pwmio/PWMOut.c
+#: ports/esp32s2/common-hal/pwmio/PWMOut.c ports/stm/common-hal/pwmio/PWMOut.c
 msgid "Could not initialize channel"
 msgstr "Det gick inte att initiera kanalen"
 
-#: ports/stm/common-hal/pwmio/PWMOut.c
+#: ports/esp32s2/common-hal/pwmio/PWMOut.c ports/stm/common-hal/pwmio/PWMOut.c
 msgid "Could not initialize timer"
 msgstr "Det gick inte att initialisera timern"
 
@@ -654,6 +687,10 @@ msgstr "Det gick inte att återinitiera timern"
 #: ports/stm/common-hal/pwmio/PWMOut.c
 msgid "Could not restart PWM"
 msgstr "Det gick inte att starta om PWM"
+
+#: ports/esp32s2/common-hal/neopixel_write/__init__.c
+msgid "Could not retrieve clock"
+msgstr "Kunde inte hämta klocka"
 
 #: shared-bindings/_bleio/Adapter.c
 msgid "Could not set address"
@@ -745,6 +782,10 @@ msgstr "Drivläge används inte när riktning är input."
 msgid "ECB only operates on 16 bytes at a time"
 msgstr "ECB arbetar endast på 16 byte åt gången"
 
+#: ports/esp32s2/common-hal/busio/SPI.c
+msgid "ESP-IDF memory allocation failed"
+msgstr "ESP-IDF-minnetilldelning misslyckades"
+
 #: ports/atmel-samd/common-hal/frequencyio/FrequencyIn.c
 #: ports/atmel-samd/common-hal/ps2io/Ps2.c
 #: ports/atmel-samd/common-hal/pulseio/PulseIn.c
@@ -756,8 +797,8 @@ msgstr "EXTINT-kanalen används redan"
 msgid "Error in regex"
 msgstr "Fel i regex"
 
-#: shared-bindings/aesio/aes.c shared-bindings/busio/SPI.c
-#: shared-bindings/microcontroller/Pin.c
+#: py/enum.c shared-bindings/_bleio/__init__.c shared-bindings/aesio/aes.c
+#: shared-bindings/busio/SPI.c shared-bindings/microcontroller/Pin.c
 #: shared-bindings/neopixel_write/__init__.c
 #: shared-bindings/terminalio/Terminal.c
 msgid "Expected a %q"
@@ -768,9 +809,17 @@ msgstr "Förväntade %q"
 msgid "Expected a Characteristic"
 msgstr "Förväntade en karaktäristik"
 
+#: shared-bindings/_bleio/Adapter.c
+msgid "Expected a DigitalInOut"
+msgstr "Förväntar en DigitalInOut"
+
 #: shared-bindings/_bleio/Characteristic.c
 msgid "Expected a Service"
 msgstr "Förväntade en tjänst"
+
+#: shared-bindings/_bleio/Adapter.c
+msgid "Expected a UART"
+msgstr "Förväntar en UART"
 
 #: shared-bindings/_bleio/Characteristic.c shared-bindings/_bleio/Descriptor.c
 #: shared-bindings/_bleio/Service.c
@@ -794,6 +843,10 @@ msgstr "Utökad annonsering i kombination med skanningssvar stöds inte."
 msgid "FFT is defined for ndarrays only"
 msgstr "FFT är enbart definierade för ndarrays"
 
+#: ports/esp32s2/common-hal/socketpool/Socket.c
+msgid "Failed SSL handshake"
+msgstr "Misslyckad SSL-handskakning"
+
 #: shared-bindings/ps2io/Ps2.c
 msgid "Failed sending command."
 msgstr "Det gick inte att skicka kommandot."
@@ -810,11 +863,20 @@ msgstr "Det gick inte att tilldela RX-buffert"
 #: ports/atmel-samd/common-hal/busio/UART.c
 #: ports/atmel-samd/common-hal/pulseio/PulseIn.c
 #: ports/cxd56/common-hal/pulseio/PulseIn.c
+#: ports/esp32s2/common-hal/pulseio/PulseIn.c
 #: ports/nrf/common-hal/pulseio/PulseIn.c
 #: ports/stm/common-hal/pulseio/PulseIn.c
 #, c-format
 msgid "Failed to allocate RX buffer of %d bytes"
 msgstr "Det gick inte att allokera RX-bufferten på %d byte"
+
+#: ports/esp32s2/common-hal/wifi/__init__.c
+msgid "Failed to allocate Wifi memory"
+msgstr "Det gick inte att allokera WiFi-minne"
+
+#: ports/esp32s2/common-hal/wifi/ScannedNetworks.c
+msgid "Failed to allocate wifi scan memory"
+msgstr "Det gick inte att allokera minne för WiFi-scanning"
 
 #: ports/nrf/common-hal/_bleio/Adapter.c
 msgid "Failed to connect: internal error"
@@ -823,6 +885,10 @@ msgstr "Det gick inte att ansluta: internt fel"
 #: ports/nrf/common-hal/_bleio/Adapter.c
 msgid "Failed to connect: timeout"
 msgstr "Det gick inte att ansluta: timeout"
+
+#: ports/esp32s2/common-hal/wifi/__init__.c
+msgid "Failed to init wifi"
+msgstr "Kunde inte initiera WiFi"
 
 #: shared-module/audiomp3/MP3Decoder.c
 msgid "Failed to parse MP3 file"
@@ -840,6 +906,14 @@ msgstr "Det gick inte att skriva till intern flash."
 #: py/moduerrno.c
 msgid "File exists"
 msgstr "Filen finns redan"
+
+#: ports/atmel-samd/common-hal/canio/Listener.c
+msgid "Filters too complex"
+msgstr "Filter för komplexa"
+
+#: ports/cxd56/common-hal/camera/Camera.c
+msgid "Format not supported"
+msgstr "Formatet stöds inte"
 
 #: shared-module/framebufferio/FramebufferDisplay.c
 #, c-format
@@ -907,7 +981,11 @@ msgstr ""
 msgid "Incorrect buffer size"
 msgstr "Fel buffertstorlek"
 
-#: py/moduerrno.c
+#: ports/atmel-samd/common-hal/pulseio/PulseIn.c
+msgid "Input taking too long"
+msgstr "Indata tar för lång tid"
+
+#: ports/esp32s2/common-hal/neopixel_write/__init__.c py/moduerrno.c
 msgid "Input/output error"
 msgstr "Indata-/utdatafel"
 
@@ -949,6 +1027,10 @@ msgstr "Ogiltigt ADC-enhetsvärde"
 #: shared-module/displayio/OnDiskBitmap.c
 msgid "Invalid BMP file"
 msgstr "Ogiltig BMP-fil"
+
+#: shared-bindings/wifi/Radio.c
+msgid "Invalid BSSID"
+msgstr "Ogiltig BSSID"
 
 #: ports/stm/common-hal/analogio/AnalogOut.c
 msgid "Invalid DAC pin supplied"
@@ -996,6 +1078,10 @@ msgstr "Felaktig fil"
 msgid "Invalid format chunk size"
 msgstr "Ogiltig formatsegmentstorlek"
 
+#: ports/esp32s2/common-hal/pwmio/PWMOut.c
+msgid "Invalid frequency"
+msgstr "Ogiltig frekvens"
+
 #: ports/stm/common-hal/pwmio/PWMOut.c
 msgid "Invalid frequency supplied"
 msgstr "Ogiltig frekvens angiven"
@@ -1033,6 +1119,8 @@ msgstr "Ogiltig pinne för höger kanal"
 #: ports/atmel-samd/common-hal/i2cperipheral/I2CPeripheral.c
 #: ports/cxd56/common-hal/busio/I2C.c ports/cxd56/common-hal/busio/SPI.c
 #: ports/cxd56/common-hal/busio/UART.c ports/cxd56/common-hal/sdioio/SDCard.c
+#: ports/esp32s2/common-hal/busio/I2C.c ports/esp32s2/common-hal/busio/SPI.c
+#: ports/esp32s2/common-hal/busio/UART.c
 #: ports/mimxrt10xx/common-hal/busio/I2C.c
 #: ports/mimxrt10xx/common-hal/busio/SPI.c
 #: ports/mimxrt10xx/common-hal/busio/UART.c ports/nrf/common-hal/busio/I2C.c
@@ -1113,6 +1201,10 @@ msgstr "init för MOSI-pinne misslyckades."
 msgid "Maximum x value when mirrored is %d"
 msgstr "Maximum x-värde vid spegling är %d"
 
+#: shared-bindings/canio/Message.c
+msgid "Messages limited to 8 bytes"
+msgstr "Meddelanden begränsad till 8 byte"
+
 #: supervisor/shared/safe_mode.c
 msgid "MicroPython NLR jump failed. Likely memory corruption."
 msgstr "MicroPython NLR jump misslyckades. Troligen korrupt minne."
@@ -1134,13 +1226,9 @@ msgstr "MISO- eller MOSI-pinne saknas"
 msgid "Must be a %q subclass."
 msgstr "Måste vara en %q-subklass."
 
-#: ports/mimxrt10xx/common-hal/busio/SPI.c ports/stm/common-hal/busio/SPI.c
+#: ports/mimxrt10xx/common-hal/busio/SPI.c shared-bindings/busio/SPI.c
 msgid "Must provide MISO or MOSI pin"
 msgstr "Måste ange MISO- eller MOSI-pinne"
-
-#: ports/stm/common-hal/busio/SPI.c
-msgid "Must provide SCK pin"
-msgstr "Måste ange SCK-pinne"
 
 #: shared-bindings/rgbmatrix/RGBMatrix.c
 #, c-format
@@ -1156,6 +1244,7 @@ msgid "No CCCD for this Characteristic"
 msgstr "Ingen CCCD för denna karaktäristik"
 
 #: ports/atmel-samd/common-hal/analogio/AnalogOut.c
+#: ports/esp32s2/common-hal/analogio/AnalogOut.c
 #: ports/stm/common-hal/analogio/AnalogOut.c
 msgid "No DAC on chip"
 msgstr "Ingen DAC på chipet"
@@ -1165,21 +1254,25 @@ msgstr "Ingen DAC på chipet"
 msgid "No DMA channel found"
 msgstr "Ingen DMA-kanal hittades"
 
-#: ports/mimxrt10xx/common-hal/busio/SPI.c ports/stm/common-hal/busio/SPI.c
+#: ports/esp32s2/common-hal/busio/SPI.c ports/mimxrt10xx/common-hal/busio/SPI.c
+#: ports/stm/common-hal/busio/SPI.c
 msgid "No MISO Pin"
 msgstr "Ingen MISO-pinne"
 
-#: ports/mimxrt10xx/common-hal/busio/SPI.c ports/stm/common-hal/busio/SPI.c
+#: ports/esp32s2/common-hal/busio/SPI.c ports/mimxrt10xx/common-hal/busio/SPI.c
+#: ports/stm/common-hal/busio/SPI.c
 msgid "No MOSI Pin"
 msgstr "Ingen MOSI-pinne"
 
 #: ports/atmel-samd/common-hal/busio/UART.c
+#: ports/esp32s2/common-hal/busio/UART.c
 #: ports/mimxrt10xx/common-hal/busio/UART.c ports/nrf/common-hal/busio/UART.c
 #: ports/stm/common-hal/busio/UART.c
 msgid "No RX pin"
 msgstr "Ingen RX-pinne"
 
 #: ports/atmel-samd/common-hal/busio/UART.c
+#: ports/esp32s2/common-hal/busio/UART.c
 #: ports/mimxrt10xx/common-hal/busio/UART.c ports/nrf/common-hal/busio/UART.c
 #: ports/stm/common-hal/busio/UART.c
 msgid "No TX pin"
@@ -1222,9 +1315,21 @@ msgstr "Ingen nyckel angavs"
 msgid "No long integer support"
 msgstr "Inget stöd för långt heltal"
 
+#: ports/esp32s2/common-hal/pwmio/PWMOut.c
+msgid "No more channels available"
+msgstr "Inga fler kanaler tillgängliga"
+
+#: ports/esp32s2/common-hal/pwmio/PWMOut.c
+msgid "No more timers available"
+msgstr "Ingen timer tillgänglig"
+
 #: ports/stm/common-hal/pwmio/PWMOut.c
 msgid "No more timers available on this pin."
 msgstr "Inga fler timers tillgängliga på denna pinne."
+
+#: shared-bindings/wifi/Radio.c
+msgid "No network with that ssid"
+msgstr "Inget nätverk med sådant ssid"
 
 #: shared-module/touchio/TouchIn.c
 msgid "No pulldown on pin; 1Mohm recommended"
@@ -1246,6 +1351,10 @@ msgstr "Ingen timer tillgänglig"
 msgid "Nordic Soft Device failure assertion."
 msgstr "Påståendet om Nordic Soft Device-fel."
 
+#: shared-bindings/ipaddress/IPv4Address.c shared-bindings/ipaddress/__init__.c
+msgid "Not a valid IP string"
+msgstr "Inte en giltig IP-sträng"
+
 #: ports/nrf/common-hal/_bleio/__init__.c
 #: shared-bindings/_bleio/CharacteristicBuffer.c
 msgid "Not connected"
@@ -1259,6 +1368,10 @@ msgstr "Ingen uppspelning"
 #: main.c
 msgid "Not running saved code.\n"
 msgstr "Kör inte sparad kod.\n"
+
+#: shared-bindings/_bleio/__init__.c
+msgid "Not settable"
+msgstr "Går inte sätta"
 
 #: shared-bindings/util.c
 msgid ""
@@ -1274,6 +1387,14 @@ msgstr "Udda paritet stöds inte"
 #: ports/atmel-samd/common-hal/audiobusio/PDMIn.c
 msgid "Only 8 or 16 bit mono with "
 msgstr "Endast 8 eller 16 bitars mono med "
+
+#: ports/esp32s2/common-hal/socketpool/SocketPool.c
+msgid "Only IPv4 SOCK_STREAM sockets supported"
+msgstr "Endast IPv4 SOCK_STREAM sockets stöds"
+
+#: ports/esp32s2/common-hal/wifi/__init__.c
+msgid "Only IPv4 addresses supported"
+msgstr "Endast IPv4-adresser stöds"
 
 #: shared-module/displayio/OnDiskBitmap.c
 #, c-format
@@ -1291,6 +1412,14 @@ msgstr ""
 "Endast monokrom, indexerad 4 bpp eller 8 bpp och 16 bpp eller högre BMP: er "
 "stöds: %d bpp angiven"
 
+#: shared-bindings/ipaddress/__init__.c
+msgid "Only raw int supported for ip"
+msgstr "Endast raw int stöds för ip"
+
+#: ports/esp32s2/common-hal/socketpool/SocketPool.c
+msgid "Out of sockets"
+msgstr "Slut på sockets"
+
 #: shared-bindings/audiobusio/PDMIn.c
 msgid "Oversample must be multiple of 8."
 msgstr "Översampling måste vara multipel av 8."
@@ -1307,6 +1436,7 @@ msgstr ""
 "PWM-frekvensen är inte skrivbar när variable_frequency är falsk vid "
 "skapandet."
 
+#: ports/esp32s2/common-hal/displayio/ParallelBus.c
 #: ports/mimxrt10xx/common-hal/displayio/ParallelBus.c
 #: ports/stm/common-hal/displayio/ParallelBus.c
 msgid "ParallelBus not yet supported"
@@ -1318,6 +1448,7 @@ msgstr "Åtkomst nekad"
 
 #: ports/atmel-samd/common-hal/analogio/AnalogIn.c
 #: ports/cxd56/common-hal/analogio/AnalogIn.c
+#: ports/esp32s2/common-hal/analogio/AnalogIn.c
 #: ports/mimxrt10xx/common-hal/analogio/AnalogIn.c
 #: ports/nrf/common-hal/analogio/AnalogIn.c
 #: ports/stm/common-hal/analogio/AnalogIn.c
@@ -1355,6 +1486,14 @@ msgstr "Plus eventuella moduler i filsystemet\n"
 msgid "Polygon needs at least 3 points"
 msgstr "Polygonen behöver minst 3 punkter"
 
+#: ports/esp32s2/common-hal/pulseio/PulseOut.c
+msgid ""
+"Port does not accept PWM carrier. Pass a pin, frequency and duty cycle "
+"instead"
+msgstr ""
+"Port accepterar inte PWM carrier. Ange pinne frekvens och arbetscykel "
+"istället"
+
 #: ports/atmel-samd/common-hal/pulseio/PulseOut.c
 #: ports/cxd56/common-hal/pulseio/PulseOut.c
 #: ports/nrf/common-hal/pulseio/PulseOut.c
@@ -1363,6 +1502,8 @@ msgid ""
 "Port does not accept pins or frequency. Construct and pass a PWMOut Carrier "
 "instead"
 msgstr ""
+"Porten accepterar inte pinne eller frekvens. Skapa och skicka en PWMOut "
+"Carrier istället"
 
 #: shared-bindings/_bleio/Adapter.c
 msgid "Prefix buffer must be on the heap"
@@ -1377,10 +1518,6 @@ msgstr ""
 msgid "Pull not used when direction is output."
 msgstr "Pull används inte när riktningen är output."
 
-#: ports/stm/ref/pulseout-pre-timeralloc.c
-msgid "PulseOut not supported on this chip"
-msgstr "PulseIn stöds inte av detta chip"
-
 #: ports/stm/common-hal/os/__init__.c
 msgid "RNG DeInit Error"
 msgstr "RNG DeInit-fel"
@@ -1389,12 +1526,13 @@ msgstr "RNG DeInit-fel"
 msgid "RNG Init Error"
 msgstr "RNG Init-fel"
 
+#: ports/esp32s2/common-hal/busio/UART.c
 #: ports/mimxrt10xx/common-hal/busio/UART.c
 msgid "RS485 inversion specified when not in RS485 mode"
 msgstr "RS485-inversion specificerad när den inte är i RS485-läge"
 
-#: ports/cxd56/common-hal/rtc/RTC.c ports/mimxrt10xx/common-hal/rtc/RTC.c
-#: ports/nrf/common-hal/rtc/RTC.c
+#: ports/cxd56/common-hal/rtc/RTC.c ports/esp32s2/common-hal/rtc/RTC.c
+#: ports/mimxrt10xx/common-hal/rtc/RTC.c ports/nrf/common-hal/rtc/RTC.c
 msgid "RTC calibration is not supported on this board"
 msgstr "RTC-kalibrering stöds inte av detta kort"
 
@@ -1428,6 +1566,10 @@ msgstr "Skrivskyddat objekt"
 msgid "Refresh too soon"
 msgstr "Uppdaterad för tidigt"
 
+#: shared-bindings/canio/RemoteTransmissionRequest.c
+msgid "RemoteTransmissionRequests limited to 8 bytes"
+msgstr "RemoteTransmissionRequests begränsad till 8 byte"
+
 #: shared-bindings/aesio/aes.c
 msgid "Requested AES mode is unsupported"
 msgstr "Det begärda AES-läget stöds inte"
@@ -1448,7 +1590,7 @@ msgstr "Kör i säkert läge! "
 msgid "SD card CSD format not supported"
 msgstr "SD-kort CSD-format stöds inte"
 
-#: ports/atmel-samd/common-hal/busio/I2C.c
+#: ports/atmel-samd/common-hal/busio/I2C.c ports/esp32s2/common-hal/busio/I2C.c
 #: ports/mimxrt10xx/common-hal/busio/I2C.c ports/nrf/common-hal/busio/I2C.c
 msgid "SDA or SCL needs a pull up"
 msgstr "SDA eller SCL behöver en pullup"
@@ -1497,6 +1639,14 @@ msgstr "Vald CTS-pinne är inte giltig"
 msgid "Serializer in use"
 msgstr "Serializern används redan"
 
+#: shared-bindings/ssl/SSLContext.c
+msgid "Server side context cannot have hostname"
+msgstr "Serversidans kontext kan inte ha värdnamn"
+
+#: ports/cxd56/common-hal/camera/Camera.c
+msgid "Size not supported"
+msgstr "Storleken stöds inte"
+
 #: shared-bindings/nvm/ByteArray.c
 msgid "Slice and value different lengths."
 msgstr "Slice och värde har olika längd."
@@ -1507,6 +1657,10 @@ msgstr "Slice och värde har olika längd."
 #: shared-bindings/pulseio/PulseIn.c
 msgid "Slices not supported"
 msgstr "Slice stöds inte"
+
+#: ports/esp32s2/common-hal/socketpool/SocketPool.c
+msgid "SocketPool can only be used with wifi.radio"
+msgstr "SocketPool kan endast användas med wifi.radio"
 
 #: shared-bindings/aesio/aes.c
 msgid "Source and destination buffers must be the same length"
@@ -1551,6 +1705,10 @@ msgid ""
 msgstr ""
 "Modulen \"microkontroller\" användes för att starta i säkert läge. Tryck på "
 "reset för att lämna säkert läge.\n"
+
+#: shared-bindings/rgbmatrix/RGBMatrix.c
+msgid "The length of rgb_pins must be 6, 12, 18, 24, or 30"
+msgstr "Längden på rgb_pins vara 6, 12, 18, 24 eller 30"
 
 #: supervisor/shared/safe_mode.c
 msgid ""
@@ -1606,6 +1764,10 @@ msgid ""
 msgstr ""
 "Timern är reserverad för internt bruk - deklarera PWM-pinne tidigare i "
 "programmet"
+
+#: supervisor/shared/safe_mode.c
+msgid "To exit, please reset the board without "
+msgstr "För att avsluta, gör reset på kortet utan "
 
 #: ports/atmel-samd/common-hal/audiobusio/I2SOut.c
 msgid "Too many channels in sample."
@@ -1676,6 +1838,10 @@ msgstr "UUID-värdet är inte str, int eller byte-buffert"
 msgid "Unable to allocate buffers for signed conversion"
 msgstr "Det går inte att allokera buffert för signerad konvertering"
 
+#: ports/esp32s2/common-hal/busio/I2C.c
+msgid "Unable to create lock"
+msgstr "Kan inte skapa lås"
+
 #: shared-module/displayio/I2CDisplay.c
 #, c-format
 msgid "Unable to find I2C Display at %x"
@@ -1701,6 +1867,15 @@ msgstr "Det gick inte att skriva till nvm."
 #: ports/nrf/common-hal/_bleio/UUID.c
 msgid "Unexpected nrfx uuid type"
 msgstr "Oväntad nrfx uuid-typ"
+
+#: ports/esp32s2/common-hal/socketpool/Socket.c
+#, c-format
+msgid "Unhandled ESP TLS error %d %d %x %d"
+msgstr "Ej hanterat ESP TLS-fel %d-%d-%x-%d"
+
+#: shared-bindings/wifi/Radio.c
+msgid "Unknown failure"
+msgstr "Okänt fel"
 
 #: ports/nrf/common-hal/_bleio/__init__.c
 #, c-format
@@ -1735,7 +1910,7 @@ msgstr ""
 "eller ignorerades."
 
 #: ports/atmel-samd/common-hal/busio/I2C.c ports/cxd56/common-hal/busio/I2C.c
-#: ports/stm/common-hal/busio/I2C.c
+#: ports/esp32s2/common-hal/busio/UART.c ports/stm/common-hal/busio/I2C.c
 msgid "Unsupported baudrate"
 msgstr "Baudrate stöd inte"
 
@@ -1812,6 +1987,10 @@ msgstr ""
 "Besök learning.adafruit.com/category/circuitpython för projektguider.\n"
 "\n"
 "För att lista inbyggda moduler, ange `help(\"modules\")`.\n"
+
+#: shared-bindings/wifi/Radio.c
+msgid "WiFi password must be between 8 and 63 characters"
+msgstr "WiFi-lösenord måste vara mellan 8 och 63 tecken"
 
 #: ports/nrf/common-hal/_bleio/PacketBuffer.c
 msgid "Writes not supported on Characteristic"
@@ -1927,7 +2106,7 @@ msgstr "Ogiltig konverteringsspecifikation"
 msgid "bad format string"
 msgstr "Ogiltig formatsträng"
 
-#: py/binary.c
+#: py/binary.c py/objarray.c
 msgid "bad typecode"
 msgstr "Ogiltig typkod"
 
@@ -1977,8 +2156,13 @@ msgid "byteorder is not a string"
 msgstr "byteorder är inte en sträng"
 
 #: ports/atmel-samd/common-hal/busio/UART.c
+#: ports/esp32s2/common-hal/busio/UART.c
 msgid "bytes > 8 bits not supported"
 msgstr "bytes> 8 bitar stöds inte"
+
+#: py/objarray.c
+msgid "bytes length not a multiple of item size"
+msgstr "bytelängd inte en multipel av storlek"
 
 #: py/objstr.c
 msgid "bytes value out of range"
@@ -2295,6 +2479,14 @@ msgstr "fel = 0x%08lX"
 msgid "exceptions must derive from BaseException"
 msgstr "exceptions måste ärvas från BaseException"
 
+#: shared-bindings/canio/CAN.c
+msgid "expected '%q' but got '%q'"
+msgstr "förväntade '%q' men fick '%q'"
+
+#: shared-bindings/canio/CAN.c
+msgid "expected '%q' or '%q' but got '%q'"
+msgstr "förväntade '%q' eller '%q' men fick '%q'"
+
 #: py/objstr.c
 msgid "expected ':' after format specifier"
 msgstr "förväntade ':' efter formatspecifikation"
@@ -2488,7 +2680,7 @@ msgstr "felaktig utfyllnad"
 msgid "index is out of bounds"
 msgstr "index är utanför gränserna"
 
-#: py/obj.c
+#: ports/esp32s2/common-hal/pulseio/PulseIn.c py/obj.c
 msgid "index out of range"
 msgstr "index utanför intervallet"
 
@@ -2503,6 +2695,10 @@ msgstr "index måste vara heltal, slices, eller Boolean-listor"
 #: extmod/ulab/code/approx/approx.c
 msgid "initial values must be iterable"
 msgstr "initialvärden måste vara iterable"
+
+#: shared-bindings/_bleio/Characteristic.c shared-bindings/_bleio/Descriptor.c
+msgid "initial_value length is wrong"
+msgstr "initial_value-längd är fel"
 
 #: py/compile.c
 msgid "inline assembler must be a function"
@@ -2698,6 +2894,10 @@ msgstr "matrisen är inte positiv bestämd"
 #, c-format
 msgid "max_length must be 0-%d when fixed_length is %s"
 msgstr "max_length måste vara 0-%d när fixed_length är %s"
+
+#: shared-bindings/_bleio/Characteristic.c shared-bindings/_bleio/Descriptor.c
+msgid "max_length must be > 0"
+msgstr "max_length måste vara > 0"
 
 #: py/runtime.c
 msgid "maximum recursion depth exceeded"
@@ -2935,15 +3135,20 @@ msgstr "ord() förväntade sig ett tecken, men en sträng med längden %d hittad
 
 #: shared-bindings/displayio/Bitmap.c
 msgid "out of range of source"
-msgstr ""
+msgstr "utanför räckvidd för source"
 
 #: shared-bindings/displayio/Bitmap.c
 msgid "out of range of target"
-msgstr ""
+msgstr "utanför räckvidd för target"
 
 #: py/objint_mpz.c
 msgid "overflow converting long int to machine word"
 msgstr "Konvertering av long int till machine word överskred maxvärde"
+
+#: py/modstruct.c
+#, c-format
+msgid "pack expected %d items for packing (got %d)"
+msgstr "pack förväntade %d stycken för packning (fick %d)"
 
 #: shared-bindings/_stage/Layer.c shared-bindings/_stage/Text.c
 msgid "palette must be 32 bytes long"
@@ -2982,6 +3187,10 @@ msgstr ""
 msgid "polygon can only be registered in one parent"
 msgstr "polygon kan endast registreras i en förälder"
 
+#: ports/esp32s2/common-hal/pulseio/PulseIn.c
+msgid "pop from an empty PulseIn"
+msgstr "pop från en tom PulseIn"
+
 #: ports/atmel-samd/common-hal/pulseio/PulseIn.c
 #: ports/cxd56/common-hal/pulseio/PulseIn.c
 #: ports/nrf/common-hal/pulseio/PulseIn.c
@@ -2997,6 +3206,26 @@ msgstr "pow() 3: e argument kan inte vara 0"
 #: py/objint_mpz.c
 msgid "pow() with 3 arguments requires integers"
 msgstr "pow() med 3 argument kräver heltal"
+
+#: ports/esp32s2/boards/adafruit_metro_esp32s2/mpconfigboard.h
+#: ports/esp32s2/boards/electroniccats_bastwifi/mpconfigboard.h
+#: ports/esp32s2/boards/espressif_kaluga_1/mpconfigboard.h
+#: ports/esp32s2/boards/espressif_saola_1_wroom/mpconfigboard.h
+#: ports/esp32s2/boards/espressif_saola_1_wrover/mpconfigboard.h
+#: ports/esp32s2/boards/microdev_micro_s2/mpconfigboard.h
+#: ports/esp32s2/boards/muselab_nanoesp32_s2/mpconfigboard.h
+#: ports/esp32s2/boards/unexpectedmaker_feathers2/mpconfigboard.h
+#: ports/esp32s2/boards/unexpectedmaker_feathers2_prerelease/mpconfigboard.h
+msgid "pressing boot button at start up.\n"
+msgstr "trycka på startknappen vid start.\n"
+
+#: ports/atmel-samd/boards/circuitplayground_express/mpconfigboard.h
+#: ports/atmel-samd/boards/circuitplayground_express_crickit/mpconfigboard.h
+#: ports/atmel-samd/boards/circuitplayground_express_displayio/mpconfigboard.h
+#: ports/atmel-samd/boards/escornabot_makech/mpconfigboard.h
+#: ports/atmel-samd/boards/meowmeow/mpconfigboard.h
+msgid "pressing both buttons at start up.\n"
+msgstr "trycka båda knapparna vid uppstart.\n"
 
 #: extmod/modutimeq.c
 msgid "queue overflow"
@@ -3123,7 +3352,7 @@ msgstr "sosfilt kräver iterable argument"
 
 #: shared-bindings/displayio/Bitmap.c
 msgid "source palette too large"
-msgstr ""
+msgstr "källpalett för stor"
 
 #: py/objstr.c
 msgid "start/end indices"
@@ -3238,8 +3467,9 @@ msgstr "tupelindex utanför intervallet"
 msgid "tuple/list has wrong length"
 msgstr "tupel/lista har fel längd"
 
-#: ports/atmel-samd/common-hal/busio/UART.c ports/nrf/common-hal/busio/UART.c
-#: shared-bindings/busio/UART.c
+#: ports/atmel-samd/common-hal/busio/UART.c
+#: ports/esp32s2/common-hal/busio/UART.c ports/nrf/common-hal/busio/UART.c
+#: shared-bindings/busio/UART.c shared-bindings/canio/CAN.c
 msgid "tx and rx cannot both be None"
 msgstr "tx och rx kan inte båda vara None"
 
@@ -3361,6 +3591,10 @@ msgstr "vektorer måste ha samma längd"
 msgid "watchdog timeout must be greater than 0"
 msgstr "watchdog timeout måste vara större än 0"
 
+#: shared-bindings/rgbmatrix/RGBMatrix.c
+msgid "width must be greater than zero"
+msgstr "width måste vara större än noll"
+
 #: shared-bindings/_bleio/Adapter.c
 msgid "window must be <= interval"
 msgstr "window måste vara <= interval"
@@ -3420,6 +3654,22 @@ msgstr "zi måste vara av typ float"
 #: extmod/ulab/code/filter/filter.c
 msgid "zi must be of shape (n_section, 2)"
 msgstr "zi måste vara i formen (n_section, 2)"
+
+#~ msgid "specify size or data, but not both"
+#~ msgstr "ange storlek eller data, men inte båda"
+
+#~ msgid "Must provide SCK pin"
+#~ msgstr "Måste ange SCK-pinne"
+
+#~ msgid ""
+#~ "\n"
+#~ "To exit, please reset the board without "
+#~ msgstr ""
+#~ "\n"
+#~ "För att avsluta, gör reset på kortet utan "
+
+#~ msgid "PulseOut not supported on this chip"
+#~ msgstr "PulseIn stöds inte av detta chip"
 
 #~ msgid "tuple/list required on RHS"
 #~ msgstr "tupel/lista krävs för RHS"
@@ -3507,9 +3757,6 @@ msgstr "zi måste vara i formen (n_section, 2)"
 
 #~ msgid "object of type '%s' has no len()"
 #~ msgstr "objekt av typen '%s' har ingen len()"
-
-#~ msgid "pop from an empty PulseIn"
-#~ msgstr "pop från en tom PulseIn"
 
 #~ msgid "pop from an empty set"
 #~ msgstr "pop från en tom uppsättning"

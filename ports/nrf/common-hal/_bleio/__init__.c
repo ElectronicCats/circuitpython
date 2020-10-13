@@ -39,6 +39,7 @@
 #include "supervisor/shared/bluetooth.h"
 
 #include "common-hal/_bleio/__init__.h"
+#include "common-hal/_bleio/bonding.h"
 
 void check_nrf_error(uint32_t err_code) {
     if (err_code == NRF_SUCCESS) {
@@ -49,7 +50,7 @@ void check_nrf_error(uint32_t err_code) {
             mp_raise_msg(&mp_type_TimeoutError, NULL);
             return;
         case BLE_ERROR_INVALID_CONN_HANDLE:
-            mp_raise_bleio_ConnectionError(translate("Not connected"));
+            mp_raise_ConnectionError(translate("Not connected"));
             return;
         default:
             mp_raise_bleio_BluetoothError(translate("Unknown soft device error: %04x"), err_code);
@@ -114,7 +115,7 @@ bleio_adapter_obj_t common_hal_bleio_adapter_obj = {
 
 void common_hal_bleio_check_connected(uint16_t conn_handle) {
     if (conn_handle == BLE_CONN_HANDLE_INVALID) {
-        mp_raise_bleio_ConnectionError(translate("Not connected"));
+        mp_raise_ConnectionError(translate("Not connected"));
     }
 }
 
@@ -241,6 +242,10 @@ void common_hal_bleio_gattc_write(uint16_t handle, uint16_t conn_handle, mp_buff
         check_nrf_error(err_code);
     }
 
+}
+
+void bleio_background(void) {
+    bonding_background();
 }
 
 void common_hal_bleio_gc_collect(void) {

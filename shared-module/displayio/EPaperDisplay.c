@@ -90,8 +90,6 @@ void common_hal_displayio_epaperdisplay_construct(displayio_epaperdisplay_obj_t*
         // TODO: Clear
     }
 
-    supervisor_start_terminal(width, height);
-
     // Set the group after initialization otherwise we may send pixels while we delay in
     // initialization.
     common_hal_displayio_epaperdisplay_show(self, &circuitpython_splash);
@@ -238,8 +236,11 @@ bool displayio_epaperdisplay_refresh_area(displayio_epaperdisplay_obj_t* self, c
     for (uint8_t pass = 0; pass < passes; pass++) {
         uint16_t remaining_rows = displayio_area_height(&clipped);
 
+        // added false parameter at end for SH1107_addressing quirk
         if (self->set_row_window_command != NO_COMMAND) {
-            displayio_display_core_set_region_to_update(&self->core, self->set_column_window_command, self->set_row_window_command, self->set_current_column_command, self->set_current_row_command, false, self->chip_select, &clipped);
+            displayio_display_core_set_region_to_update(&self->core, self->set_column_window_command,
+            self->set_row_window_command, self->set_current_column_command, self->set_current_row_command,
+            false, self->chip_select, &clipped, false);
         }
 
         uint8_t write_command = self->write_black_ram_command;
