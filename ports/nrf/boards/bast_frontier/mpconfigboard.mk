@@ -1,0 +1,8 @@
+USB_VID = 0x2341
+USB_PID = 0x805A
+USB_PRODUCT = "Electronic_Cats_Bast_Frontier"
+USB_MANUFACTURER = "ElectronicCats"
+
+MCU_CHIP = nrf52840
+
+INTERNAL_FLASH_FILESYSTEM = 1
